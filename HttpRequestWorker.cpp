@@ -75,7 +75,7 @@ HttpRequestWorker::~HttpRequestWorker()
     //    for (QObject *obj : this->children()) {
     //        qDebug() << "there is a child " << obj->metaObject()->className();
     //    }
-    //delete manager;
+    delete manager;
 }
 
 QString HttpRequestWorker::httpAttributeEncode(QString attribute_name, QString input) {
