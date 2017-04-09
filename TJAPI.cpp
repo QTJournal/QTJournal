@@ -1,5 +1,4 @@
 #include "TJAPI.h"
-#include "mainwindow.h"
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValue>
@@ -52,46 +51,4 @@ void TJAPI::handleAuth(HttpRequestWorker* worker_)
     qDebug() << token;
    // updateText(result);
     emit responseIsHere(result);
-}
-void TJAPI::getUserInfo(){
-    QString urlStr = "https://api.tjournal.ru/2.3/account/info";
-
-    HttpRequestInput input(urlStr,"GET");
-    QByteArray authorizationValue;
-    authorizationValue.append(token);
-
-    input.addHeader("X-Auth-Session", authorizationValue);
-
-    // HttpRequestWorker *worker = new HttpRequestWorker(this);
-    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
-
-    worker->execute(&input);
-}
-void TJAPI::getInfo(){
-    QString urlStr = "https://api.tjournal.ru/2.3/club";
-
-    HttpRequestInput input(urlStr, "GET");
-
-    // HttpRequestWorker *worker = new HttpRequestWorker(this);
-    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
-
-    worker->execute(&input);
-}
-
-
-void TJAPI::handleResult(HttpRequestWorker * worker_)
-{
-    worker_->deleteLater();
-    if (worker_->errorType != QNetworkReply::NoError) {
-        qDebug() << worker_->errorStr;
-        emit updatedText(worker_->errorStr);
-        //delete worker_;
-        return;
-    }
-    QString result = worker_->response;
-    worker_->deleteLater();
-    //delete worker_;
-
-    qDebug() << result;
-    emit updatedText(result);
 }

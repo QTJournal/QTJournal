@@ -9,16 +9,11 @@ class TJAPI : public QObject
 public:
     TJAPI();
     void verifyQR(QString QRCode);
-    void getUserInfo();
-    void getInfo();
 private:
     HttpRequestWorker *worker;
     QByteArray token;
 signals:
     void responseIsHere(QString response);
-    void updatedText(QString text);
-public slots:
-    void handleResult(HttpRequestWorker* worker_);
 private slots:
     void handleAuth(HttpRequestWorker* worker_);
 };
