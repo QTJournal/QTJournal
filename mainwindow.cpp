@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
      setWindowTitle("SUPER TJ Client");
      worker = new HttpRequestWorker(this);
      api = new TJAPI();
+      connect(api, SIGNAL(responseIsHere(QString)), this, SLOT(updateText(QString)));
+      connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
 }
 
 MainWindow::~MainWindow()
@@ -22,7 +24,6 @@ MainWindow::~MainWindow()
 void MainWindow::postAutenticate()
 {
    api->verifyQR(ui->plainTextEdit->toPlainText());
-   connect(api, SIGNAL(responseIsHere(QString)), this, SLOT(updateText(QString)));
 }
 
 void MainWindow::getUserInfo()
@@ -37,7 +38,7 @@ void MainWindow::getUserInfo()
     input.addHeader("X-Auth-Session", authorizationValue);
 
    // HttpRequestWorker *worker = new HttpRequestWorker(this);
-    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
+
 
     worker->execute(&input);
 }
