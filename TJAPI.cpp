@@ -4,12 +4,13 @@
 #include <QtCore/QJsonValue>
 TJAPI::TJAPI()
 {
-    worker = new HttpRequestWorker(this);
-    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleAuth(HttpRequestWorker*)));
+
+
    // connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
 }
 void TJAPI::verifyQR(QString QRCode)
 {
+     worker = new HttpRequestWorker(this);
     QString urlStr = "https://api.tjournal.ru/2.3/account/verifyQR";
 
     HttpRequestInput input(urlStr, "POST");
@@ -21,6 +22,7 @@ void TJAPI::verifyQR(QString QRCode)
         input.addVar("hash", encodedPass);
         input.addVar("token", QRCode);
         // HttpRequestWorker *worker = new HttpRequestWorker(this);
+        connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleAuth(HttpRequestWorker*)));
         worker->execute(&input);
     }
 }
@@ -36,18 +38,18 @@ void TJAPI::handleAuth(HttpRequestWorker* worker_)
     if (tokenJsonValue.type() == QJsonValue::Undefined) {
         //updateText("there is no token in response");
         emit responseIsHere("there is no token in response");
-        //delete worker_;
+        delete worker_;
         return;
     }
 
     token = tokenJsonValue.toString().toLatin1();
     if (token.isNull()) {
         emit responseIsHere("token contains illegal non-Latin1 characters");
-        //delete worker_;
+        delete worker_;
         return;
     }
 
-    //delete worker_;
+    delete worker_;
 
     qDebug() << token;
    // updateText(result);
@@ -59,21 +61,22 @@ void TJAPI::handleResult(HttpRequestWorker * worker_)
     if (worker_->errorType != QNetworkReply::NoError) {
         qDebug() << worker_->errorStr;
         emit updateTextSignal(worker_->errorStr);
-        //delete worker_;
+        delete worker_;
         return;
     }
     QString result = worker_->response;
 
-    //delete worker_;
+    delete worker_;
 
     qDebug() << result;
     emit updateTextSignal(result);
 }
 void TJAPI::getInfo()
 {
+    worker = new HttpRequestWorker(this);
     QString urlStr = "https://api.tjournal.ru/2.3/club";
 
     HttpRequestInput input(urlStr, "GET");
-
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
     worker->execute(&input);
 }

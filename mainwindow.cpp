@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
      api = new TJAPI();
       connect(api, SIGNAL(responseIsHere(QString)), this, SLOT(updateText(QString)));
       connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
+       connect(api,SIGNAL(updateTextSignal(QString)),this,SLOT(updateText(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -56,7 +57,6 @@ void MainWindow::on_textEdit_destroyed()
 void MainWindow::on_pushButton_clicked()
 {
     api->getInfo();
-    connect(api,SIGNAL(updateTextSignal(QString)),this,SLOT(updateText(QString)));
 }
 
 void MainWindow::on_pushButton_2_clicked()
