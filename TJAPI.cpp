@@ -52,3 +52,28 @@ void TJAPI::handleAuth(HttpRequestWorker* worker_)
    // updateText(result);
     emit responseIsHere(result);
 }
+void TJAPI::handleResult(HttpRequestWorker * worker_)
+{
+    worker_->deleteLater();
+    if (worker_->errorType != QNetworkReply::NoError) {
+        qDebug() << worker_->errorStr;
+        emit updateTextSignal(worker_->errorStr);
+        //delete worker_;
+        return;
+    }
+    QString result = worker_->response;
+    worker_->deleteLater();
+    //delete worker_;
+
+    qDebug() << result;
+    emit updateTextSignal(result);
+}
+void TJAPI::getInfo()
+{
+    QString urlStr = "https://api.tjournal.ru/2.3/club";
+
+    HttpRequestInput input(urlStr, "GET");
+
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
+    worker->execute(&input);
+}

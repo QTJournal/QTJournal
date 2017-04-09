@@ -23,13 +23,8 @@ private:
 
 public slots:
     void updateText(const QString& text_);
-    void getInfo();
     void postAutenticate();
     void getUserInfo();
-
-
-    void handleResult(HttpRequestWorker* worker_);
-    void handle_autentification(QString result);
     //void handle_userInfo(HttpRequestWorker* worker_);
 private slots:
     void on_textEdit_destroyed();
