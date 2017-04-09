@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
      setWindowTitle("SUPER TJ Client");
+     worker = new HttpRequestWorker(this);
+     api = new TJAPI();
 }
 
 MainWindow::~MainWindow()
@@ -23,7 +25,7 @@ void MainWindow::getInfo()
 
     HttpRequestInput input(urlStr, "GET");
 
-    HttpRequestWorker *worker = new HttpRequestWorker(this);
+   // HttpRequestWorker *worker = new HttpRequestWorker(this);
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
 
     worker->execute(&input);
@@ -31,21 +33,8 @@ void MainWindow::getInfo()
 
 void MainWindow::postAutenticate()
 {
-    QString urlStr = "https://api.tjournal.ru/2.3/account/verifyQR";
-
-    HttpRequestInput input(urlStr, "POST");
-    QString tokenQR = ui->plainTextEdit->toPlainText();
-    if(tokenQR.size())
-    {
-        QString fknhash=tokenQR+"hDv#L9Om>iHfAdT5^6uIy?&";
-        QString encodedPass = QString(QCryptographicHash::hash((fknhash.toLocal8Bit()),QCryptographicHash::Md5).toHex());
-        qDebug()<<encodedPass;
-        input.addVar("hash", encodedPass);
-        input.addVar("token", tokenQR);
-         HttpRequestWorker *worker = new HttpRequestWorker(this);
-        connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handle_autentification(HttpRequestWorker*)));
-        worker->execute(&input);
-    }
+   api->verifyQR(ui->plainTextEdit->toPlainText());
+   connect(api, SIGNAL(responseIsHere(QString)), this, SLOT(handle_autentification(QString)));
 }
 
 void MainWindow::getUserInfo()
@@ -59,7 +48,7 @@ void MainWindow::getUserInfo()
 
     input.addHeader("X-Auth-Session", authorizationValue);
 
-    HttpRequestWorker *worker = new HttpRequestWorker(this);
+   // HttpRequestWorker *worker = new HttpRequestWorker(this);
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
 
     worker->execute(&input);
@@ -82,31 +71,8 @@ void MainWindow::handleResult(HttpRequestWorker * worker_)
     updateText(result);
 }
 
-void MainWindow::handle_autentification(HttpRequestWorker *worker_)
+void MainWindow::handle_autentification(QString result)
 {
-    worker_->deleteLater();
-    QByteArray result = worker_->response;
-
-    QJsonDocument responseJson = QJsonDocument::fromJson(result/*, QJsonParseError *error = Q_NULLPTR*/); //TODO add error check
-    QJsonObject responseJsonObject = responseJson.object();
-    QJsonValue tokenJsonValue = responseJsonObject.value(QString("sessionId"));
-    qDebug()<<result;
-    if (tokenJsonValue.type() == QJsonValue::Undefined) {
-        updateText("there is no token in response");
-        //delete worker_;
-        return;
-    }
-
-    token = tokenJsonValue.toString().toLatin1();
-    if (token.isNull()) {
-        updateText("token contains illegal non-Latin1 characters");
-        //delete worker_;
-        return;
-    }
-
-    //delete worker_;
-
-    qDebug() << token;
     updateText(result);
 }
 
