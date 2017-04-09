@@ -9,39 +9,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-     setWindowTitle("SUPER TJ Client");
-     worker = new HttpRequestWorker(this);
-     api = new TJAPI();
-      connect(api, SIGNAL(responseIsHere(QString)), this, SLOT(updateText(QString)));
-      connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
-       connect(api,SIGNAL(updateTextSignal(QString)),this,SLOT(updateText(QString)));
+    setWindowTitle("SUPER TJ Client");
+    api = new TJAPI();
+    connect(api, SIGNAL(responseIsHere(QString)), this, SLOT(updateText(QString)));
+    connect(api,SIGNAL(updateTextSignal(QString)),this,SLOT(updateText(QString)));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::postAutenticate()
-{
-   api->verifyQR(ui->plainTextEdit->toPlainText());
-}
-
-void MainWindow::getUserInfo()
-{
-    QString urlStr = "https://api.tjournal.ru/2.3/account/info";
-
-    HttpRequestInput input(urlStr, "GET");
-    //QString authorizationValueString = QString("Bearer %1").arg(token);
-    QByteArray authorizationValue;
-    authorizationValue.append(token);
-
-    input.addHeader("X-Auth-Session", authorizationValue);
-
-   // HttpRequestWorker *worker = new HttpRequestWorker(this);
-
-
-    worker->execute(&input);
 }
 
 void MainWindow::updateText(const QString& text_)
@@ -61,10 +37,10 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    postAutenticate();
+    api->verifyQR(ui->plainTextEdit->toPlainText());
 }
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    getUserInfo();
+    api->getUserInfo();
 }

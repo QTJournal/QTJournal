@@ -1,6 +1,5 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "HttpRequestWorker.h"
 #include "TJAPI.h"
 #include <QMainWindow>
 
@@ -18,14 +17,10 @@ public:
 private:
     QByteArray token;
     Ui::MainWindow *ui;
-    HttpRequestWorker *worker;
     TJAPI *api;
 
 public slots:
     void updateText(const QString& text_);
-    void postAutenticate();
-    void getUserInfo();
-    //void handle_userInfo(HttpRequestWorker* worker_);
 private slots:
     void on_textEdit_destroyed();
     void on_pushButton_clicked();

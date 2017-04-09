@@ -4,9 +4,6 @@
 #include <QtCore/QJsonValue>
 TJAPI::TJAPI()
 {
-
-
-   // connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
 }
 void TJAPI::verifyQR(QString QRCode)
 {
@@ -21,20 +18,30 @@ void TJAPI::verifyQR(QString QRCode)
         qDebug()<<encodedPass;
         input.addVar("hash", encodedPass);
         input.addVar("token", QRCode);
-        // HttpRequestWorker *worker = new HttpRequestWorker(this);
         connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleAuth(HttpRequestWorker*)));
         worker->execute(&input);
     }
+}
+void TJAPI::getUserInfo()
+{
+    worker = new HttpRequestWorker(this);
+    QString urlStr = "https://api.tjournal.ru/2.3/account/info";
+    HttpRequestInput input(urlStr, "GET");
+    QByteArray authorizationValue;
+    authorizationValue.append(token);
+    input.addHeader("X-Auth-Session", authorizationValue);
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
+    worker->execute(&input);
 }
 void TJAPI::handleAuth(HttpRequestWorker* worker_)
 {
 
     QByteArray result = worker_->response;
-
     QJsonDocument responseJson = QJsonDocument::fromJson(result/*, QJsonParseError *error = Q_NULLPTR*/); //TODO add error check
     QJsonObject responseJsonObject = responseJson.object();
     QJsonValue tokenJsonValue = responseJsonObject.value(QString("sessionId"));
     qDebug()<<result;
+
     if (tokenJsonValue.type() == QJsonValue::Undefined) {
         //updateText("there is no token in response");
         emit responseIsHere("there is no token in response");
@@ -52,7 +59,6 @@ void TJAPI::handleAuth(HttpRequestWorker* worker_)
     delete worker_;
 
     qDebug() << token;
-   // updateText(result);
     emit responseIsHere(result);
 }
 void TJAPI::handleResult(HttpRequestWorker * worker_)

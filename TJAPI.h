@@ -10,6 +10,7 @@ public:
     TJAPI();
     void verifyQR(QString QRCode);
     void getInfo();
+    void getUserInfo();
 private:
     HttpRequestWorker *worker;
     QByteArray token;
