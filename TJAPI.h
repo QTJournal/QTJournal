@@ -11,14 +11,18 @@ public:
     void verifyQR(QString QRCode);
     void getInfo();
     void getUserInfo();
+    void setToken(QByteArray token);
+    QByteArray getToken();
 private:
     HttpRequestWorker *worker;
     QByteArray token;
 signals:
     void responseIsHere(QString response);
     void updateTextSignal(QString text);
+    void getInfoExecutionFinished(HttpRequestWorker *worker);
+    void getUserInfoExecutionFinished(HttpRequestWorker *worker);
+    void verifyQRFinished(HttpRequestWorker *worker);
 private slots:
-    void handleAuth(HttpRequestWorker* worker_);
     void handleResult(HttpRequestWorker *worker_);
 };
 

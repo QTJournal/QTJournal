@@ -26,10 +26,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
     HttpRequestWorker.cpp \
-    TJAPI.cpp
+    TJAPI.cpp \
+    controller.cpp
 
 HEADERS  += mainwindow.h \
     HttpRequestWorker.h \
-    TJAPI.h
+    TJAPI.h \
+    controller.h
 
 FORMS    += mainwindow.ui
