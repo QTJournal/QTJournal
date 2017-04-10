@@ -30,7 +30,9 @@ void TJAPI::getUserInfo()
     QByteArray authorizationValue;
     authorizationValue.append(token);
     input.addHeader("X-Auth-Session", authorizationValue);
-    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
+    //connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getUserInfoExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 void TJAPI::handleAuth(HttpRequestWorker* worker_)
@@ -78,10 +80,12 @@ void TJAPI::handleResult(HttpRequestWorker * worker_)
 }
 void TJAPI::getInfo()
 {
-   worker = new HttpRequestWorker(this);
+    worker = new HttpRequestWorker(this);
     QString urlStr = "https://api.tjournal.ru/2.3/club";
 
     HttpRequestInput input(urlStr, "GET");
-    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
+    //connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getInfoExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }

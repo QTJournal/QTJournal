@@ -17,7 +17,6 @@ public:
 private:
     QByteArray token;
     Ui::MainWindow *ui;
-    TJAPI *api;
 
 public slots:
     void updateText(const QString& text_);
@@ -26,6 +25,10 @@ private slots:
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
     void on_pushButton_3_clicked();
+signals:
+    void getInfoButtonClicked();
+    void verifyQRButtonClicked(QString);
+    void getUserInfoButtonClicked();
 };
 
 #endif // MAINWINDOW_H
