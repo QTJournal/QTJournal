@@ -36,6 +36,11 @@ void TJAPI::setToken(QByteArray Gtoken)
 {
     this->token=Gtoken;
 }
+QByteArray TJAPI::getToken()
+{
+    return this->token;
+}
+
 void TJAPI::handleResult(HttpRequestWorker * worker_)
 {
 

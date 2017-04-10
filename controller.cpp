@@ -59,6 +59,16 @@ void Controller::handleGetInfoResult(HttpRequestWorker* worker)
 void Controller::handleGetUserInfoResult(HttpRequestWorker *worker)
 {
     qDebug() << "handleGetUserInfoResult(HttpRequestWorker *worker)";
+    qDebug() << "handleGetInfoResult(HttpRequestWorker* worker)";
+    if (worker->errorType != QNetworkReply::NoError) {
+        qDebug() << worker->errorStr;
+        emit updateText(worker->errorStr);
+        worker->deleteLater();
+        return;
+    }
+    QString result = worker->response;
+    worker->deleteLater();
+    emit updateText(result);
 }
 
 void Controller::handleVerifyQRResult(HttpRequestWorker* worker)

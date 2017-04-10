@@ -12,6 +12,7 @@ public:
     void getInfo();
     void getUserInfo();
     void setToken(QByteArray token);
+    QByteArray getToken();
 private:
     HttpRequestWorker *worker;
     QByteArray token;
