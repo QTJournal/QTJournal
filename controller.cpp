@@ -1,5 +1,7 @@
 #include "controller.h"
-
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
+#include <QtCore/QJsonValue>
 Controller::Controller(MainWindow *mainWindow, QObject *parent) : QObject(parent)
 {
     this->mainWindow = mainWindow;
@@ -61,5 +63,30 @@ void Controller::handleGetUserInfoResult(HttpRequestWorker *worker)
 
 void Controller::handleVerifyQRResult(HttpRequestWorker* worker)
 {
+    QByteArray result = worker->response;
+    QJsonDocument responseJson = QJsonDocument::fromJson(result/*, QJsonParseError *error = Q_NULLPTR*/); //TODO add error check
+    QJsonObject responseJsonObject = responseJson.object();
+    QJsonValue tokenJsonValue = responseJsonObject.value(QString("sessionId"));
+    qDebug()<<result;
+
+    if (tokenJsonValue.type() == QJsonValue::Undefined) {
+        //updateText("there is no token in response");
+        emit updateText("there is no token in response");
+        worker->deleteLater();
+        return;
+    }
+
+    QByteArray token = tokenJsonValue.toString().toLatin1();
+    if (token.isNull()) {
+        emit updateText("token contains illegal non-Latin1 characters");
+        worker->deleteLater();
+        return;
+    }
+
+    worker->deleteLater();
+
+    qDebug() << token;
+    this->api->setToken(token);
+    emit updateText(result);
     qDebug() << "handleVerifyQRResult(HttpRequestWorker* worker)";
 }

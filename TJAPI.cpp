@@ -1,7 +1,4 @@
 #include "TJAPI.h"
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtCore/QJsonValue>
 TJAPI::TJAPI()
 {
 }
@@ -18,7 +15,7 @@ void TJAPI::verifyQR(QString QRCode)
         qDebug()<<encodedPass;
         input.addVar("hash", encodedPass);
         input.addVar("token", QRCode);
-        connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleAuth(HttpRequestWorker*)));
+        connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SIGNAL(verifyQRFinished(HttpRequestWorker*)));
         worker->execute(&input);
     }
 }
@@ -35,33 +32,9 @@ void TJAPI::getUserInfo()
             SIGNAL(getUserInfoExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
-void TJAPI::handleAuth(HttpRequestWorker* worker_)
+void TJAPI::setToken(QByteArray Gtoken)
 {
-
-    QByteArray result = worker_->response;
-    QJsonDocument responseJson = QJsonDocument::fromJson(result/*, QJsonParseError *error = Q_NULLPTR*/); //TODO add error check
-    QJsonObject responseJsonObject = responseJson.object();
-    QJsonValue tokenJsonValue = responseJsonObject.value(QString("sessionId"));
-    qDebug()<<result;
-
-    if (tokenJsonValue.type() == QJsonValue::Undefined) {
-        //updateText("there is no token in response");
-        emit responseIsHere("there is no token in response");
-        worker_->deleteLater();
-        return;
-    }
-
-    token = tokenJsonValue.toString().toLatin1();
-    if (token.isNull()) {
-        emit responseIsHere("token contains illegal non-Latin1 characters");
-        worker_->deleteLater();
-        return;
-    }
-
-    worker_->deleteLater();
-
-    qDebug() << token;
-    emit responseIsHere(result);
+    this->token=Gtoken;
 }
 void TJAPI::handleResult(HttpRequestWorker * worker_)
 {

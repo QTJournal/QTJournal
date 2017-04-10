@@ -11,6 +11,7 @@ public:
     void verifyQR(QString QRCode);
     void getInfo();
     void getUserInfo();
+    void setToken(QByteArray token);
 private:
     HttpRequestWorker *worker;
     QByteArray token;
@@ -21,7 +22,6 @@ signals:
     void getUserInfoExecutionFinished(HttpRequestWorker *worker);
     void verifyQRFinished(HttpRequestWorker *worker);
 private slots:
-    void handleAuth(HttpRequestWorker* worker_);
     void handleResult(HttpRequestWorker *worker_);
 };
 
