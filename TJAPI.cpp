@@ -3,32 +3,39 @@ TJAPI::TJAPI()
 {
     apiurl=QString("https://%1/%2/").arg(apihost, apiversion);
 }
+HttpRequestInput TJAPI::createRequest(QString url, QString method)
+{
+    QString urlStr = this->apiurl+url;
+    HttpRequestInput input(urlStr, method);
+    if(!token.isEmpty())
+    {
+        QByteArray authorizationValue;
+        authorizationValue.append(token);
+        input.addHeader("X-Auth-Session", authorizationValue);
+    }
+    return input;
+}
+
 void TJAPI::verifyQR(QString QRCode)
 {
     worker = new HttpRequestWorker(this);
-    QString urlStr = apiurl+"account/verifyQR";
-
-    HttpRequestInput input(urlStr, "POST");
+    HttpRequestInput input = this->createRequest("account/verifyQR", "POST");
     if(QRCode.size())
     {
-        QString fknhash=QRCode+"hDv#L9Om>iHfAdT5^6uIy?&";
-        QString encodedPass = QString(QCryptographicHash::hash((fknhash.toLocal8Bit()),QCryptographicHash::Md5).toHex());
-        qDebug()<<encodedPass;
-        input.addVar("hash", encodedPass);
+        QString QRwithsalt=QRCode+this->salt;
+        QString QRhash = QString(QCryptographicHash::hash((QRwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
+        qDebug()<<QRhash;
+        input.addVar("hash", QRhash);
         input.addVar("token", QRCode);
-        connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SIGNAL(verifyQRFinished(HttpRequestWorker*)));
+        connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+                SIGNAL(verifyQRFinished(HttpRequestWorker*)));
         worker->execute(&input);
     }
 }
 void TJAPI::getUserInfo()
 {
     worker = new HttpRequestWorker(this);
-    QString urlStr = apiurl+"account/info";
-    HttpRequestInput input(urlStr, "GET");
-    QByteArray authorizationValue;
-    authorizationValue.append(token);
-    input.addHeader("X-Auth-Session", authorizationValue);
-    //connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
+    HttpRequestInput input = this->createRequest("account/info", "GET");
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(getUserInfoExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
@@ -44,7 +51,6 @@ QByteArray TJAPI::getToken()
 
 void TJAPI::handleResult(HttpRequestWorker * worker_)
 {
-
     if (worker_->errorType != QNetworkReply::NoError) {
         qDebug() << worker_->errorStr;
         emit updateTextSignal(worker_->errorStr);
@@ -53,7 +59,6 @@ void TJAPI::handleResult(HttpRequestWorker * worker_)
     }
     QString result = worker_->response;
     worker_->deleteLater();
-
     qDebug() << result;
     emit updateTextSignal(result);
 }
@@ -61,9 +66,7 @@ void TJAPI::getInfo()
 {
     worker = new HttpRequestWorker(this);
     QString urlStr = apiurl+"club";
-
     HttpRequestInput input(urlStr, "GET");
-    //connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(getInfoExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
