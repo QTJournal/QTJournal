@@ -4,12 +4,14 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValue>
+#include <QFileDialog>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setWindowTitle("SUPER TJ Client");
+
     //api = new TJAPI();
     //connect(api, SIGNAL(responseIsHere(QString)), this, SLOT(updateText(QString)));
     //connect(api,SIGNAL(updateTextSignal(QString)),this,SLOT(updateText(QString)));
@@ -46,4 +48,14 @@ void MainWindow::on_pushButton_3_clicked()
 {
     //api->getUserInfo();
     emit getUserInfoButtonClicked();
+}
+void MainWindow::on_pushButton_4_clicked()
+{
+    QFileDialog dialog(this);
+    QStringList FileNames;
+    dialog.setFileMode(QFileDialog::AnyFile);
+    dialog.setNameFilter(tr("Images (*.png *.xpm *.jpg)"));
+    if (dialog.exec()){
+        FileNames = dialog.selectedFiles();
+    }
 }

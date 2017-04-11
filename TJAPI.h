@@ -8,7 +8,7 @@ class TJAPI : public QObject
     Q_OBJECT
 public:
     TJAPI();
-    void verifyQR(QString QRсode);
+    void verifyQR(QString QRcode);
     void getInfo();
     void getUserInfo();
     void getAccountPosts(int account=0);

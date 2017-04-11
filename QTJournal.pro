@@ -4,7 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network qml
+QT       += core gui network qml multimedia quick
+
+include(QZXing/QZXing.pri)
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,11 +29,11 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     HttpRequestWorker.cpp \
     TJAPI.cpp \
-    controller.cpp
+    controller.cpp \
 
 HEADERS  += mainwindow.h \
     HttpRequestWorker.h \
     TJAPI.h \
-    controller.h
+    controller.h \
 
 FORMS    += mainwindow.ui
