@@ -125,7 +125,7 @@ void TJAPI::getFavorites(int objectType, int count, int offset)
 {
     worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("favorites", "GET");
-    if(userId)
+    if(objectType)
         input.addVar("objectType", QString::number(objectType));
     if (count!=30)
         input.addVar("count", QString::number(count));
