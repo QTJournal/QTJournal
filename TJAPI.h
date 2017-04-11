@@ -8,10 +8,13 @@ class TJAPI : public QObject
     Q_OBJECT
 public:
     TJAPI();
-    void verifyQR(QString QRсode);
-    void getInfo();
-    void getUserInfo();
-    void getAccountPosts(int account=0);
+    void verifyQR(QString QRcode);
+    void getClubPosts(int count=30, int offset=0, int type=0, QString sortMode="mainpage");
+    void getUserInfo(int id=0);
+    void getAccountPosts(int userId=0, int count=30, int offset=0);
+    void getAccountComments(int userId=0, int count=30, int offset=0);
+    void getNotifications();
+    void getFavorites(int objectType, int count=30, int offset=0);
     void setToken(QByteArray token);
     QByteArray getToken();
 private:
@@ -25,7 +28,7 @@ private:
 signals:
     void responseIsHere(QString response);
     void updateTextSignal(QString text);
-    void getInfoExecutionFinished(HttpRequestWorker *worker);
+    void getClubPostsExecutionFinished(HttpRequestWorker *worker);
     void getUserInfoExecutionFinished(HttpRequestWorker *worker);
     void verifyQRFinished(HttpRequestWorker *worker);
 private slots:

@@ -3,6 +3,7 @@ TJAPI::TJAPI()
 {
     apiurl=QString("https://%1/%2/").arg(apihost, apiversion);
 }
+
 HttpRequestInput TJAPI::createRequest(QString url, QString method)
 {
     QString urlStr = this->apiurl+url;
@@ -32,10 +33,14 @@ void TJAPI::verifyQR(QString QRсode)
         worker->execute(&input);
     }
 }
-void TJAPI::getUserInfo()
+void TJAPI::getUserInfo(int id)
 {
     worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/info", "GET");
+
+    if(id)
+        input.addVar("userId", QString::number(id));
+
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(getUserInfoExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
@@ -62,15 +67,70 @@ void TJAPI::handleResult(HttpRequestWorker * worker_)
     qDebug() << result;
     emit updateTextSignal(result);
 }
-void TJAPI::getInfo()
+
+void TJAPI::getClubPosts(int count, int offset, int type, QString sortMode)
 {
     worker = new HttpRequestWorker(this);
-    QString urlStr = apiurl+"club";
-    HttpRequestInput input(urlStr, "GET");
+    HttpRequestInput input = this->createRequest("club", "GET");
+    if (count!=30)
+        input.addVar("count", QString::number(count));
+    if (offset)
+        input.addVar("offset", QString::number(offset));
+    if (type)
+        input.addVar("type", QString::number(type));
+    if(sortMode!="mainpage")
+        input.addVar("sortMode", sortMode);
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
-            SIGNAL(getInfoExecutionFinished(HttpRequestWorker*)));
+            SIGNAL(getClubPostsExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
-void TJAPI::getAccountPosts(int account)
+
+void TJAPI::getAccountPosts(int userId, int count, int offset)
 {
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("account/posts", "GET");
+    if(userId)
+        input.addVar("userId", QString::number(userId));
+    if (count!=30)
+        input.addVar("count", QString::number(count));
+    if (offset)
+        input.addVar("offset", QString::number(offset));
+    //TODO: ADD CONNECT!
+    worker->execute(&input);
+}
+
+void TJAPI::getAccountComments(int userId, int count, int offset)
+{
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("account/comments", "GET");
+    if(userId)
+        input.addVar("userId", QString::number(userId));
+    if (count!=30)
+        input.addVar("count", QString::number(count));
+    if (offset)
+        input.addVar("offset", QString::number(offset));
+    //TODO: ADD CONNECT!
+    worker->execute(&input);
+}
+
+void TJAPI::getNotifications()
+{
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("account/notifications", "GET");
+    //TODO: ADD CONNECT!
+    worker->execute(&input);
+}
+
+void TJAPI::getFavorites(int objectType, int count, int offset)
+{
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("favorites", "GET");
+    if(userId)
+        input.addVar("objectType", QString::number(objectType));
+    if (count!=30)
+        input.addVar("count", QString::number(count));
+    if (offset)
+        input.addVar("offset", QString::number(offset));
+    //TODO: ADD CONNECT!
+    worker->execute(&input);
 }

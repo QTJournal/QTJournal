@@ -28,7 +28,7 @@ public slots:
     void handleGetInfoButton();
 
     //handle api responses
-    void handleGetInfoResult(HttpRequestWorker*);
+    void handleGetClubPostsResult(HttpRequestWorker*);
     void handleGetUserInfoResult(HttpRequestWorker*);
     void handleVerifyQRResult(HttpRequestWorker*);
 };
