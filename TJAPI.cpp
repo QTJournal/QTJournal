@@ -16,17 +16,17 @@ HttpRequestInput TJAPI::createRequest(QString url, QString method)
     return input;
 }
 
-void TJAPI::verifyQR(QString QRсode)
+void TJAPI::verifyQR(QString QRcode)
 {
     worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/verifyQR", "POST");
-    if(QRсode.size())
+    if(QRcode.size())
     {
-        QString QRwithsalt=QRсode+this->salt;
+        QString QRwithsalt=QRcode+this->salt;
         QString QRhash = QString(QCryptographicHash::hash((QRwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
         qDebug()<<QRhash;
         input.addVar("hash", QRhash);
-        input.addVar("token", QRсode);
+        input.addVar("token", QRcode);
         connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
                 SIGNAL(verifyQRFinished(HttpRequestWorker*)));
         worker->execute(&input);
