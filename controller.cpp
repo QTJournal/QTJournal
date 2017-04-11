@@ -65,34 +65,7 @@ void Controller::handleGetInfoResult(HttpRequestWorker* worker)
     for (int i = 0; i < posts.size(); i++) {
         QJsonObject post = posts.at(i).toObject();
 
-        Post *postModel = new Post();
-        postModel->setId(post["id"].toInt());
-        postModel->setTitle(post["title"].toString());
-        postModel->setUrl(QUrl(post["url"].toString()));
-
-        QDateTime date = QDateTime::fromSecsSinceEpoch(post["date"].toInt());
-        postModel->setDate(date);
-
-        postModel->setIntro(post["intro"].toString());
-        postModel->setIsReadMore(post["isReadMore"].toBool());
-        postModel->setHits(post["hits"].toInt());
-        postModel->setCommentsCount(post["commentsCount"].toInt());
-        postModel->setIsFavorited(post["isFavorited"].toBool());
-        postModel->setMobileAppUrl(QUrl(post["mobileAppUrl"].toString()));
-        postModel->setIsDraft(post["isDraft"].toBool());
-        postModel->setIsGold(post["isGold"].toBool());
-        postModel->setIsVotingActive(post["isVotingActive"].toBool());
-        postModel->setIsWide(post["isWide"].toBool());
-        postModel->setIsAdvertising(post["isAdvertising"].toBool());
-        postModel->setIsCommentsClosed(post["isCommentsClosed"].toBool());
-        postModel->setIsStillUpdating(post["isStillUpdating"].toBool());
-
-        postModel->setAuthor(ParserUtil::parseUser(post["author"].toObject()));
-        postModel->setPublicAuthor(ParserUtil::parseUser(post["publicAuthor"].toObject()));
-
-        postModel->setCover(ParserUtil::parseCover(post["cover"].toObject()));
-        postModel->setExternalLink(ParserUtil::parseExternalLink(post["externalLink"].toObject()));
-        postModel->setLikes(ParserUtil::parseLikes(post["likes"].toObject()));
+        Post* postModel = ParserUtil::parsePost(post);
 
         qDebug() << postModel->getPublicAuthor()->getName();
 

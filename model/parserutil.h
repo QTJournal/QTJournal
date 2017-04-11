@@ -4,6 +4,7 @@
 #include "cover.h"
 #include "externallink.h"
 #include "likes.h"
+#include "post.h"
 #include "user.h"
 
 #include <QJsonObject>
@@ -17,6 +18,7 @@ public:
     static Cover *parseCover(QJsonObject cover);
     static Likes *parseLikes(QJsonObject likes);
     static ExternalLink *parseExternalLink(QJsonObject externalLink);
+    static Post *parsePost(QJsonObject post);
 
 private:
     explicit ParserUtil(QObject *parent = 0);
