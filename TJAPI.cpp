@@ -1,11 +1,12 @@
 #include "TJAPI.h"
 TJAPI::TJAPI()
 {
+    apiurl=QString("https://%1/%2/").arg(apihost, apiversion);
 }
 void TJAPI::verifyQR(QString QRCode)
 {
     worker = new HttpRequestWorker(this);
-    QString urlStr = "https://api.tjournal.ru/2.3/account/verifyQR";
+    QString urlStr = apiurl+"account/verifyQR";
 
     HttpRequestInput input(urlStr, "POST");
     if(QRCode.size())
@@ -22,7 +23,7 @@ void TJAPI::verifyQR(QString QRCode)
 void TJAPI::getUserInfo()
 {
     worker = new HttpRequestWorker(this);
-    QString urlStr = "https://api.tjournal.ru/2.3/account/info";
+    QString urlStr = apiurl+"account/info";
     HttpRequestInput input(urlStr, "GET");
     QByteArray authorizationValue;
     authorizationValue.append(token);
@@ -59,11 +60,14 @@ void TJAPI::handleResult(HttpRequestWorker * worker_)
 void TJAPI::getInfo()
 {
     worker = new HttpRequestWorker(this);
-    QString urlStr = "https://api.tjournal.ru/2.3/club";
+    QString urlStr = apiurl+"club";
 
     HttpRequestInput input(urlStr, "GET");
     //connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this, SLOT(handleResult(HttpRequestWorker*)));
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(getInfoExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
+}
+void TJAPI::getAccountPosts(int account)
+{
 }
