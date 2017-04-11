@@ -1,11 +1,11 @@
 #include "TJAPI.h"
 TJAPI::TJAPI()
 {
-    apiurl=QString("https://%1/%2/").arg(apihost, apiversion);
+    //apiurl=
 }
 HttpRequestInput TJAPI::createRequest(QString url, QString method)
 {
-    QString urlStr = this->apiurl+url;
+    QString urlStr = this->API_URL+url;
     HttpRequestInput input(urlStr, method);
     if(!token.isEmpty())
     {
@@ -22,7 +22,7 @@ void TJAPI::verifyQR(QString QRcode)
     HttpRequestInput input = this->createRequest("account/verifyQR", "POST");
     if(QRcode.size())
     {
-        QString QRwithsalt=QRcode+this->salt;
+        QString QRwithsalt=QRcode+this->SALT;
         QString QRhash = QString(QCryptographicHash::hash((QRwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
         qDebug()<<QRhash;
         input.addVar("hash", QRhash);
@@ -65,7 +65,7 @@ void TJAPI::handleResult(HttpRequestWorker * worker_)
 void TJAPI::getInfo()
 {
     worker = new HttpRequestWorker(this);
-    QString urlStr = apiurl+"club";
+    QString urlStr = API_URL+"club";
     HttpRequestInput input(urlStr, "GET");
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(getInfoExecutionFinished(HttpRequestWorker*)));
