@@ -15,6 +15,9 @@ class Post : public QObject
 {
     Q_OBJECT
 public:
+
+    enum PostTypes {NEWS, OFFTOP, VIDEO, ARTICLE};
+
     explicit Post(QObject *parent = 0);
 
     static void fromString(QString string);
@@ -90,7 +93,7 @@ private:
     //dateRFC
     User* author;
     User* publicAuthor;
-    //type should be enum
+    PostTypes type;
     QString intro;
     Cover* cover;
     ExternalLink* externalLink;
@@ -125,6 +128,13 @@ public:
     void setLikes(Likes *value);
     ExternalLink *getExternalLink() const;
     void setExternalLink(ExternalLink *value);
+    //void setType(const int value);
+    PostTypes getType() const
+    {
+        return type;
+    }
+    void setType(const PostTypes &value);
+    void setType(const int value);
 };
 
 #endif // POST_H

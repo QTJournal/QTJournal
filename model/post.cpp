@@ -220,6 +220,16 @@ void Post::setPublicAuthor(User *value)
     publicAuthor = value;
 }
 
+void Post::setType(const PostTypes &value)
+{
+    type = value;
+}
+
+void Post::setType(const int value)
+{
+    type = static_cast<PostTypes>(value);
+}
+
 ExternalLink *Post::getExternalLink() const
 {
     return externalLink;

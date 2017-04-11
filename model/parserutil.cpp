@@ -75,6 +75,8 @@ Post *ParserUtil::parsePost(QJsonObject post)
     postModel->setCover(ParserUtil::parseCover(post["cover"].toObject()));
     postModel->setExternalLink(ParserUtil::parseExternalLink(post["externalLink"].toObject()));
     postModel->setLikes(ParserUtil::parseLikes(post["likes"].toObject()));
+
+    postModel->setType(post["type"].toInt());
     return postModel;
 }
 
