@@ -4,6 +4,8 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValue>
+#include <QStringListModel>
+#include <QDebug>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -22,7 +24,20 @@ MainWindow::~MainWindow()
 
 void MainWindow::updateText(const QString& text_)
 {
-     ui->textEdit->append(QString("\r%1").arg(text_));
+    ui->textEdit->append(QString("\r%1").arg(text_));
+}
+
+void MainWindow::updatePostsList(QList<Post *> *posts)
+{
+    QStringList postsNames;
+    for (int i = 0; i < posts->size(); i++) {
+        postsNames << posts->at(i)->getTitle();
+        posts->at(i)->deleteLater();
+    }
+    QStringListModel* listModel = new QStringListModel();
+    listModel->setStringList(postsNames);
+    ui->postsList->setModel(listModel);
+    delete posts;
 }
 
 void MainWindow::on_textEdit_destroyed()

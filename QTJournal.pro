@@ -27,11 +27,23 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     HttpRequestWorker.cpp \
     TJAPI.cpp \
-    controller.cpp
+    controller.cpp \
+    model/post.cpp \
+    model/parserutil.cpp \
+    model/user.cpp \
+    model/cover.cpp \
+    model/externallink.cpp \
+    model/likes.cpp
 
 HEADERS  += mainwindow.h \
     HttpRequestWorker.h \
     TJAPI.h \
-    controller.h
+    controller.h \
+    model/post.h \
+    model/parserutil.h \
+    model/user.h \
+    model/cover.h \
+    model/externallink.h \
+    model/likes.h
 
 FORMS    += mainwindow.ui

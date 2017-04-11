@@ -2,6 +2,9 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValue>
+#include <QJsonArray>
+#include <model/parserutil.h>
+#include <model/post.h>
 Controller::Controller(MainWindow *mainWindow, QObject *parent) : QObject(parent)
 {
     this->mainWindow = mainWindow;
@@ -16,6 +19,7 @@ Controller::Controller(MainWindow *mainWindow, QObject *parent) : QObject(parent
     connect(api, SIGNAL(getUserInfoExecutionFinished(HttpRequestWorker*)), this,
             SLOT(handleGetUserInfoResult(HttpRequestWorker*)));
     connect(api, SIGNAL(verifyQRFinished(HttpRequestWorker*)), this, SLOT(handleVerifyQRResult(HttpRequestWorker*)));
+    connect(this, SIGNAL(updatePostsList(QList<Post*>*)), mainWindow, SLOT(updatePostsList(QList<Post*>*)));
 }
 
 Controller::~Controller()
@@ -51,8 +55,22 @@ void Controller::handleGetInfoResult(HttpRequestWorker* worker)
         return;
     }
     QString result = worker->response;
+
+    QByteArray byteResult = worker->response;
+    QJsonDocument responseJson = QJsonDocument::fromJson(byteResult);
+    QJsonArray posts = responseJson.array();
+
+    QList<Post*>* postsList = new QList<Post*>();
+
+    for (int i = 0; i < posts.size(); i++) {
+        QJsonObject post = posts.at(i).toObject();
+        Post* postModel = ParserUtil::parsePost(post);
+        postsList->append(postModel);
+    }
+
     worker->deleteLater();
 
+    emit updatePostsList(postsList);
     emit updateText(result);
 }
 
