@@ -56,6 +56,7 @@ Post *ParserUtil::parsePost(QJsonObject post)
     postModel->setDate(date);
 
     postModel->setIntro(post["intro"].toString());
+    postModel->setEntryJSON(post["entryJSON"].toString());
     postModel->setIsReadMore(post["isReadMore"].toBool());
     postModel->setHits(post["hits"].toInt());
     postModel->setCommentsCount(post["commentsCount"].toInt());

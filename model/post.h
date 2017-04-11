@@ -98,6 +98,7 @@ private:
     Cover* cover;
     ExternalLink* externalLink;
     //inspired by
+    QString entryJSON;
     bool isReadMore;
     long hits;
     Likes* likes;
@@ -135,6 +136,8 @@ public:
     }
     void setType(const PostTypes &value);
     void setType(const int value);
+    QString getEntryJSON() const;
+    void setEntryJSON(const QString &value);
 };
 
 #endif // POST_H

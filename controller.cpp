@@ -65,7 +65,6 @@ void Controller::handleGetInfoResult(HttpRequestWorker* worker)
     for (int i = 0; i < posts.size(); i++) {
         QJsonObject post = posts.at(i).toObject();
         Post* postModel = ParserUtil::parsePost(post);
-        qDebug() << postModel->getType();
         postsList->append(postModel);
     }
 

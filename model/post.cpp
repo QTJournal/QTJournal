@@ -220,6 +220,16 @@ void Post::setPublicAuthor(User *value)
     publicAuthor = value;
 }
 
+QString Post::getEntryJSON() const
+{
+    return entryJSON;
+}
+
+void Post::setEntryJSON(const QString &value)
+{
+    entryJSON = value;
+}
+
 void Post::setType(const PostTypes &value)
 {
     type = value;
