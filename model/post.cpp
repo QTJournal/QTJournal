@@ -220,9 +220,42 @@ void Post::setPublicAuthor(User *value)
     publicAuthor = value;
 }
 
+ExternalLink *Post::getExternalLink() const
+{
+    return externalLink;
+}
+
+void Post::setExternalLink(ExternalLink *value)
+{
+    externalLink = value;
+}
+
+Likes *Post::getLikes() const
+{
+    return likes;
+}
+
+void Post::setLikes(Likes *value)
+{
+    likes = value;
+}
+
+Cover *Post::getCover() const
+{
+    return cover;
+}
+
+void Post::setCover(Cover *value)
+{
+    cover = value;
+}
+
 
 Post::~Post()
 {
     delete author;
     delete publicAuthor;
+    delete cover;
+    delete externalLink;
+    delete likes;
 }

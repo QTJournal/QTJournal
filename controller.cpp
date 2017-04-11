@@ -90,6 +90,10 @@ void Controller::handleGetInfoResult(HttpRequestWorker* worker)
         postModel->setAuthor(ParserUtil::parseUser(post["author"].toObject()));
         postModel->setPublicAuthor(ParserUtil::parseUser(post["publicAuthor"].toObject()));
 
+        postModel->setCover(ParserUtil::parseCover(post["cover"].toObject()));
+        postModel->setExternalLink(ParserUtil::parseExternalLink(post["externalLink"].toObject()));
+        postModel->setLikes(ParserUtil::parseLikes(post["likes"].toObject()));
+
         qDebug() << postModel->getPublicAuthor()->getName();
 
         postsList->append(postModel);

@@ -1,6 +1,9 @@
 #ifndef POST_H
 #define POST_H
 
+#include "cover.h"
+#include "externallink.h"
+#include "likes.h"
 #include "user.h"
 
 #include <QDateTime>
@@ -89,12 +92,12 @@ private:
     User* publicAuthor;
     //type should be enum
     QString intro;
-    //Cover cover;
-    //ExternalLink
+    Cover* cover;
+    ExternalLink* externalLink;
     //inspired by
     bool isReadMore;
     long hits;
-    //Likes
+    Likes* likes;
     int commentsCount;
     bool isFavorited;
     //userDevice
@@ -115,30 +118,13 @@ signals:
 public slots:
 
 public:
-    class Cover
-    {
-    public:
-        Cover() {}
-        QUrl getThumbnailUrl() const;
-        void setThumbnailUrl(const QUrl &value);
 
-        QUrl getUrl() const;
-        void setUrl(const QUrl &value);
-
-        int getWidth() const;
-        void setWidth(int value);
-
-        int getHeight() const;
-        void setHeight(int value);
-
-    private:
-        //type enum
-        //additional data
-        QUrl thumbnailUrl;
-        QUrl url;
-        int width;
-        int height;
-    };
+    Cover *getCover() const;
+    void setCover(Cover *value);
+    Likes *getLikes() const;
+    void setLikes(Likes *value);
+    ExternalLink *getExternalLink() const;
+    void setExternalLink(ExternalLink *value);
 };
 
 #endif // POST_H
