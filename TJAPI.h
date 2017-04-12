@@ -25,11 +25,12 @@ public:
     void urlReval(QString url);
     QByteArray getToken();
 private:
+    QString API_HOST = "api.tjournal.ru";
+    QString API_VERSION = "2.3";
+    QString SALT = "hDv#L9Om>iHfAdT5^6uIy?&";
+    QString API_URL = QString("https://%1/%2/").arg(API_HOST, API_VERSION);
+
     HttpRequestWorker *worker;
-    QString apihost="api.tjournal.ru";
-    QString apiversion="2.3";
-    QString salt="hDv#L9Om>iHfAdT5^6uIy?&";
-    QString apiurl;
     QByteArray token;
     HttpRequestInput createRequest(QString url, QString method);
 signals:

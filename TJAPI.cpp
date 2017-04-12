@@ -1,12 +1,12 @@
 #include "TJAPI.h"
 TJAPI::TJAPI()
 {
-    apiurl=QString("https://%1/%2/").arg(apihost, apiversion);
+    //apiurl=
 }
 
 HttpRequestInput TJAPI::createRequest(QString url, QString method)
 {
-    QString urlStr = this->apiurl+url;
+    QString urlStr = this->API_URL+url;
     HttpRequestInput input(urlStr, method);
     if(!token.isEmpty())
     {
@@ -17,17 +17,17 @@ HttpRequestInput TJAPI::createRequest(QString url, QString method)
     return input;
 }
 
-void TJAPI::verifyQR(QString QRсode)
+void TJAPI::verifyQR(QString QRcode)
 {
     worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/verifyQR", "POST");
-    if(QRсode.size())
+    if(QRcode.size())
     {
-        QString QRwithsalt=QRсode+this->salt;
+        QString QRwithsalt=QRcode+this->SALT;
         QString authhash = QString(QCryptographicHash::hash((QRwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
         qDebug()<<authhash;
         input.addVar("hash", authhash);
-        input.addVar("token", QRсode);
+        input.addVar("token", QRcode);
         connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
                 SIGNAL(verifyQRFinished(HttpRequestWorker*)));
         worker->execute(&input);
@@ -38,7 +38,7 @@ void TJAPI::authorize(QString socialId, int socialType, QString token)
 {
     worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/authorize", "POST");
-    QString socialwithsalt=socialId+socialType+token+this->salt;
+    QString socialwithsalt=socialId+socialType+token+this->SALT;
     QString authhash = QString(QCryptographicHash::hash((socialwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
     qDebug()<<authhash;
     input.addVar("socialId", socialId);
