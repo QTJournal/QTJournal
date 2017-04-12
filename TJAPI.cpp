@@ -134,3 +134,31 @@ void TJAPI::getFavorites(int objectType, int count, int offset)
     //TODO: ADD CONNECT!
     worker->execute(&input);
 }
+
+void TJAPI::addFavorite(int objectId, int objectType)
+{
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("favorites/new", "POST");
+    input.addVar("objectId", QString::number(objectId));
+    input.addVar("objectType", QString::number(objectType));
+    //TODO: ADD CONNECT!
+    worker->execute(&input);
+}
+
+void TJAPI::removeFavorite(int objectId, int objectType)
+{
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("favorites/remove", "POST");
+    input.addVar("objectId", QString::number(objectId));
+    input.addVar("objectType", QString::number(objectType));
+    //TODO: ADD CONNECT!
+    worker->execute(&input);
+}
+
+void TJAPI::getAccountSettings()
+{
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("account/settings", "GET");
+    //TODO: ADD CONNECT!
+    worker->execute(&input);
+}

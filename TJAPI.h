@@ -16,6 +16,9 @@ public:
     void getNotifications();
     void getFavorites(int objectType, int count=30, int offset=0);
     void setToken(QByteArray token);
+    void addFavorite(int objectId, int objectType);
+    void removeFavorite(int objectId, int objectType);
+    void getAccountSettings();
     QByteArray getToken();
 private:
     HttpRequestWorker *worker;
