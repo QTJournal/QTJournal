@@ -19,6 +19,7 @@ public:
     void addFavorite(int objectId, int objectType);
     void removeFavorite(int objectId, int objectType);
     void getAccountSettings();
+    void setAccountSettings(QString &settings);
     QByteArray getToken();
 private:
     HttpRequestWorker *worker;
@@ -34,6 +35,13 @@ signals:
     void getClubPostsExecutionFinished(HttpRequestWorker *worker);
     void getUserInfoExecutionFinished(HttpRequestWorker *worker);
     void verifyQRFinished(HttpRequestWorker *worker);
+    void getAccountPostsFinished(HttpRequestWorker *worker);
+    void getAccountCommentsFinished(HttpRequestWorker *worker);
+    void getNotificationsFinished(HttpRequestWorker *worker);
+    void getFavoritesFinished(HttpRequestWorker *worker);
+    void removeFavoriteFinished(HttpRequestWorker *worker);
+    void getAccountSettingsFinished(HttpRequestWorker *worker);
+    void setAccountSettingsFinished(HttpRequestWorker *worker);
 private slots:
     void handleResult(HttpRequestWorker *worker_);
 };

@@ -95,7 +95,8 @@ void TJAPI::getAccountPosts(int userId, int count, int offset)
         input.addVar("count", QString::number(count));
     if (offset)
         input.addVar("offset", QString::number(offset));
-    //TODO: ADD CONNECT!
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getAccountPostsExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
@@ -109,7 +110,8 @@ void TJAPI::getAccountComments(int userId, int count, int offset)
         input.addVar("count", QString::number(count));
     if (offset)
         input.addVar("offset", QString::number(offset));
-    //TODO: ADD CONNECT!
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getAccountCommentsExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
@@ -117,7 +119,8 @@ void TJAPI::getNotifications()
 {
     worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/notifications", "GET");
-    //TODO: ADD CONNECT!
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getNotificationsExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
@@ -131,7 +134,8 @@ void TJAPI::getFavorites(int objectType, int count, int offset)
         input.addVar("count", QString::number(count));
     if (offset)
         input.addVar("offset", QString::number(offset));
-    //TODO: ADD CONNECT!
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getFavoritesExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
@@ -141,7 +145,8 @@ void TJAPI::addFavorite(int objectId, int objectType)
     HttpRequestInput input = this->createRequest("favorites/new", "POST");
     input.addVar("objectId", QString::number(objectId));
     input.addVar("objectType", QString::number(objectType));
-    //TODO: ADD CONNECT!
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(addFavoriteExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
@@ -151,7 +156,8 @@ void TJAPI::removeFavorite(int objectId, int objectType)
     HttpRequestInput input = this->createRequest("favorites/remove", "POST");
     input.addVar("objectId", QString::number(objectId));
     input.addVar("objectType", QString::number(objectType));
-    //TODO: ADD CONNECT!
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(removeFavoriteExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
@@ -159,6 +165,19 @@ void TJAPI::getAccountSettings()
 {
     worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/settings", "GET");
-    //TODO: ADD CONNECT!
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getAccountSettingsExecutionFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+void TJAPI::setAccountSettings(QString &settings)
+{
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("favorites/remove", "POST");
+    foreach (QString sett, settings)
+    {
+        input.addVar("notifications[email][]", sett);
+    }
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(setAccountSettingsExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
