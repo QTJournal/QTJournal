@@ -26,7 +26,10 @@ void MainWindow::updateText(const QString& text_)
 {
      ui->textEdit->append(QString("\r%1").arg(text_));
 }
-
+void MainWindow::updateQRString(const QString& str_)
+{
+    ui->plainTextEdit->appendPlainText(str_);
+}
 void MainWindow::on_textEdit_destroyed()
 {
 
@@ -58,4 +61,5 @@ void MainWindow::on_pushButton_4_clicked()
     if (dialog.exec()){
         FileNames = dialog.selectedFiles();
     }
+    emit QRtoDecode(FileNames);
 }

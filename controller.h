@@ -20,6 +20,7 @@ private:
 
 signals:
     void updateText(QString);
+    void updateQRString(QString);
 
 public slots:
     //handle ui actions
@@ -31,6 +32,9 @@ public slots:
     void handleGetInfoResult(HttpRequestWorker*);
     void handleGetUserInfoResult(HttpRequestWorker*);
     void handleVerifyQRResult(HttpRequestWorker*);
+
+    //handle library result
+    void decodeQR(QStringList);
 };
 
 #endif // CONTROLLER_H

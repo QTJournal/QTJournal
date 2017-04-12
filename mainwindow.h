@@ -19,6 +19,7 @@ private:
 
 public slots:
     void updateText(const QString& text_);
+    void updateQRString(const QString& str_);
 private slots:
     void on_textEdit_destroyed();
     void on_pushButton_clicked();
@@ -29,6 +30,7 @@ signals:
     void getInfoButtonClicked();
     void verifyQRButtonClicked(QString);
     void getUserInfoButtonClicked();
+    void QRtoDecode(QStringList);
 };
 
 #endif // MAINWINDOW_H
