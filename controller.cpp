@@ -13,8 +13,8 @@ Controller::Controller(MainWindow *mainWindow, QObject *parent) : QObject(parent
     connect(mainWindow, SIGNAL(getUserInfoButtonClicked()), this, SLOT(handleUserInfoButton()));
     connect(mainWindow, SIGNAL(getInfoButtonClicked()), this, SLOT(handleGetInfoButton()));
     connect(mainWindow, SIGNAL(verifyQRButtonClicked(QString)), this, SLOT(handleVerifyQRButton(QString)));
-    connect(api, SIGNAL(getInfoExecutionFinished(HttpRequestWorker*)), this,
-            SLOT(handleGetInfoResult(HttpRequestWorker*)));
+    connect(api, SIGNAL(getClubPostsExecutionFinished(HttpRequestWorker*)), this,
+            SLOT(handleGetClubPostsResult(HttpRequestWorker*)));
     connect(this, SIGNAL(updateText(QString)), mainWindow, SLOT(updateText(QString)));
     connect(api, SIGNAL(getUserInfoExecutionFinished(HttpRequestWorker*)), this,
             SLOT(handleGetUserInfoResult(HttpRequestWorker*)));
@@ -42,12 +42,12 @@ void Controller::handleVerifyQRButton(QString QRCode)
 void Controller::handleGetInfoButton()
 {
     qDebug() << "handleGetInfoButton()";
-    api->getInfo();
+    api->getClubPosts();
 }
 
-void Controller::handleGetInfoResult(HttpRequestWorker* worker)
+void Controller::handleGetClubPostsResult(HttpRequestWorker* worker)
 {
-    qDebug() << "handleGetInfoResult(HttpRequestWorker* worker)";
+    qDebug() << "handleGetClubPostsResult(HttpRequestWorker* worker)";
     if (worker->errorType != QNetworkReply::NoError) {
         qDebug() << worker->errorStr;
         emit updateText(worker->errorStr);
