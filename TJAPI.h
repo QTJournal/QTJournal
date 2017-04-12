@@ -9,6 +9,7 @@ class TJAPI : public QObject
 public:
     TJAPI();
     void verifyQR(QString QRcode);
+    void authorize(QString socialId, int socialType, QString token);
     void getClubPosts(int count=30, int offset=0, int type=0, QString sortMode="mainpage");
     void getUserInfo(int id=0);
     void getAccountPosts(int userId=0, int count=30, int offset=0);
@@ -35,6 +36,7 @@ signals:
     void getClubPostsExecutionFinished(HttpRequestWorker *worker);
     void getUserInfoExecutionFinished(HttpRequestWorker *worker);
     void verifyQRFinished(HttpRequestWorker *worker);
+    void authorizeFinished(HttpRequestWorker *worker);
     void getAccountPostsFinished(HttpRequestWorker *worker);
     void getAccountCommentsFinished(HttpRequestWorker *worker);
     void getNotificationsFinished(HttpRequestWorker *worker);

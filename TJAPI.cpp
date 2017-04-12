@@ -24,15 +24,32 @@ void TJAPI::verifyQR(QString QRсode)
     if(QRсode.size())
     {
         QString QRwithsalt=QRсode+this->salt;
-        QString QRhash = QString(QCryptographicHash::hash((QRwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
-        qDebug()<<QRhash;
-        input.addVar("hash", QRhash);
+        QString authhash = QString(QCryptographicHash::hash((QRwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
+        qDebug()<<authhash;
+        input.addVar("hash", authhash);
         input.addVar("token", QRсode);
         connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
                 SIGNAL(verifyQRFinished(HttpRequestWorker*)));
         worker->execute(&input);
     }
 }
+
+void TJAPI::authorize(QString socialId, int socialType, QString token)
+{
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("account/authorize", "POST");
+    QString socialwithsalt=socialId+socialType+token+this->salt;
+    QString authhash = QString(QCryptographicHash::hash((socialwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
+    qDebug()<<authhash;
+    input.addVar("socialId", socialId);
+    input.addVar("socialType", QString::number(socialType));
+    input.addVar("token", token);
+    input.addVar("hash", authhash);
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(authorizeFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
 void TJAPI::getUserInfo(int id)
 {
     worker = new HttpRequestWorker(this);
@@ -45,10 +62,12 @@ void TJAPI::getUserInfo(int id)
             SIGNAL(getUserInfoExecutionFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
+
 void TJAPI::setToken(QByteArray Gtoken)
 {
     this->token=Gtoken;
 }
+
 QByteArray TJAPI::getToken()
 {
     return this->token;
