@@ -21,6 +21,8 @@ public:
     void removeFavorite(int objectId, int objectType);
     void getAccountSettings();
     void setAccountSettings(QString &settings);
+    void sendMisprint(QString text, QString url);
+    void urlReval(QString url);
     QByteArray getToken();
 private:
     HttpRequestWorker *worker;
@@ -44,6 +46,8 @@ signals:
     void removeFavoriteFinished(HttpRequestWorker *worker);
     void getAccountSettingsFinished(HttpRequestWorker *worker);
     void setAccountSettingsFinished(HttpRequestWorker *worker);
+    void sendMisprintFinished(HttpRequestInput *worker);
+    void urlRevalFinished(HttpRequestInput *worker);
 private slots:
     void handleResult(HttpRequestWorker *worker_);
 };

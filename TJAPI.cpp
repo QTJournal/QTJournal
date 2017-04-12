@@ -115,7 +115,7 @@ void TJAPI::getAccountPosts(int userId, int count, int offset)
     if (offset)
         input.addVar("offset", QString::number(offset));
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
-            SIGNAL(getAccountPostsExecutionFinished(HttpRequestWorker*)));
+            SIGNAL(getAccountPostsFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
@@ -130,7 +130,7 @@ void TJAPI::getAccountComments(int userId, int count, int offset)
     if (offset)
         input.addVar("offset", QString::number(offset));
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
-            SIGNAL(getAccountCommentsExecutionFinished(HttpRequestWorker*)));
+            SIGNAL(getAccountCommentsFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
@@ -139,7 +139,7 @@ void TJAPI::getNotifications()
     worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/notifications", "GET");
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
-            SIGNAL(getNotificationsExecutionFinished(HttpRequestWorker*)));
+            SIGNAL(getNotificationsFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
@@ -154,7 +154,7 @@ void TJAPI::getFavorites(int objectType, int count, int offset)
     if (offset)
         input.addVar("offset", QString::number(offset));
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
-            SIGNAL(getFavoritesExecutionFinished(HttpRequestWorker*)));
+            SIGNAL(getFavoritesFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
@@ -165,7 +165,7 @@ void TJAPI::addFavorite(int objectId, int objectType)
     input.addVar("objectId", QString::number(objectId));
     input.addVar("objectType", QString::number(objectType));
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
-            SIGNAL(addFavoriteExecutionFinished(HttpRequestWorker*)));
+            SIGNAL(addFavoriteFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
@@ -176,7 +176,7 @@ void TJAPI::removeFavorite(int objectId, int objectType)
     input.addVar("objectId", QString::number(objectId));
     input.addVar("objectType", QString::number(objectType));
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
-            SIGNAL(removeFavoriteExecutionFinished(HttpRequestWorker*)));
+            SIGNAL(removeFavoriteFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
@@ -185,18 +185,39 @@ void TJAPI::getAccountSettings()
     worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/settings", "GET");
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
-            SIGNAL(getAccountSettingsExecutionFinished(HttpRequestWorker*)));
+            SIGNAL(getAccountSettingsFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 void TJAPI::setAccountSettings(QString &settings)
 {
     worker = new HttpRequestWorker(this);
-    HttpRequestInput input = this->createRequest("favorites/remove", "POST");
+    HttpRequestInput input = this->createRequest("account/settings", "POST");
     foreach (QString sett, settings)
     {
         input.addVar("notifications[email][]", sett);
     }
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
-            SIGNAL(setAccountSettingsExecutionFinished(HttpRequestWorker*)));
+            SIGNAL(setAccountSettingsFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::sendMisprint(QString text, QString url)
+{
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("misprints/new", "POST");
+    input.addVar("text", text);
+    input.addVar("url", url);
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(sendMisprintFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::urlReval(QString url)
+{
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("content/reveal", "GET");
+    input.addVar("url", url);
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(urlRevalFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
