@@ -271,7 +271,7 @@ void TJAPI::setNewsListExcludes(int listId, int sources[])
     worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("news/listExcludes", "POST");
     input.addVar("listId", QString::number(listId));
-    for (int i=0; i<sizeof(sources); i++)
+    for (int i=0; i<int(sizeof(sources)); i++)
     {
         input.addVar("sources[]", QString::number(sources[i]));
     }
@@ -303,6 +303,28 @@ void TJAPI::getBlacklist()
     HttpRequestInput input = this->createRequest("tweets/blacklist", "GET");
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(getBlacklistFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::addBlacklisted(QString tweopleId, QString hash)
+{
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("tweets/blacklistAdd", "POST");
+    input.addVar("tweopleId", tweopleId);
+    input.addVar("hash", hash);
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(addBlecklistedinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::removeBlacklisted(QString tweopleId, QString hash)
+{
+    worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("tweets/blacklistRemove", "POST");
+    input.addVar("tweopleId", tweopleId);
+    input.addVar("hash", hash);
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(addBlacklistedFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 

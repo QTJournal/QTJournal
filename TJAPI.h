@@ -29,6 +29,8 @@ public:
     void setNewsListExcludes(int listId, int sources[]);
     void getTweets(int count=50, int offset=0, int listId=1, QString interval="fresh");
     void getBlacklist();
+    void addBlacklisted(QString tweopleId, QString hash);
+    void removeBlacklisted(QString tweopleId, QString hash);
     QByteArray getToken();
 private:
     QString API_HOST = "api.tjournal.ru";
@@ -61,6 +63,8 @@ signals:
     void setNewsListExcludesFinished(HttpRequestInput *worker);
     void getTweetsFinished(HttpRequestInput *worker);
     void getBlacklistFinished(HttpRequestInput *worker);
+    void addBlacklistedFinished(HttpRequestInput *worker);
+    void removeBlacklistedFinished(HttpRequestInput *worker);
 private slots:
     void handleResult(HttpRequestWorker *worker_);
 };
