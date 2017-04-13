@@ -19,8 +19,6 @@ Controller::Controller(MainWindow *mainWindow, QObject *parent) : QObject(parent
     connect(mainWindow, SIGNAL(verifyQRButtonClicked(QString)), this, SLOT(handleVerifyQRButton(QString)));
 
     connect(mainWindow, SIGNAL(QRtoDecode(QStringList)), this, SLOT(decodeQR(QStringList)));
-    connect(api, SIGNAL(getInfoExecutionFinished(HttpRequestWorker*)), this,
-            SLOT(handleGetInfoResult(HttpRequestWorker*)));
 
     connect(api, SIGNAL(getClubPostsExecutionFinished(HttpRequestWorker*)), this,
             SLOT(handleGetClubPostsResult(HttpRequestWorker*)));

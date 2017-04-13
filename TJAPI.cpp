@@ -23,7 +23,7 @@ void TJAPI::verifyQR(QString QRcode)
     HttpRequestInput input = this->createRequest("account/verifyQR", "POST");
     if(QRcode.size())
     {
-        QString QRwithsalt=QRcode+this->salt;
+        QString QRwithsalt=QRcode+this->SALT;
         QString QRhash = QString(QCryptographicHash::hash((QRwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
         qDebug()<<QRhash;
         input.addVar("hash", QRhash);
