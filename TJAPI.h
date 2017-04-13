@@ -23,6 +23,12 @@ public:
     void setAccountSettings(QString &settings);
     void sendMisprint(QString text, QString url);
     void urlReval(QString url);
+    void getNews(int listId, int count=50, QString interval="popular");
+    void getNewsLists(int listId, bool showSources=1);
+    void setNewsSettings(QString &settingsML, QString &settings);
+    void setNewsListExcludes(int listId, int sources[]);
+    void getTweets(int count=50, int offset=0, int listId=1, QString interval="fresh");
+    void getBlacklist();
     QByteArray getToken();
 private:
     QString API_HOST = "api.tjournal.ru";
@@ -49,6 +55,12 @@ signals:
     void setAccountSettingsFinished(HttpRequestWorker *worker);
     void sendMisprintFinished(HttpRequestInput *worker);
     void urlRevalFinished(HttpRequestInput *worker);
+    void getNewsFinished(HttpRequestInput *worker);
+    void getNewsListsFinished(HttpRequestInput *worker);
+    void setNewsSettingsFinished(HttpRequestInput *worker);
+    void setNewsListExcludesFinished(HttpRequestInput *worker);
+    void getTweetsFinished(HttpRequestInput *worker);
+    void getBlacklistFinished(HttpRequestInput *worker);
 private slots:
     void handleResult(HttpRequestWorker *worker_);
 };
