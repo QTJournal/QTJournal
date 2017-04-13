@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>616</width>
-    <height>311</height>
+    <width>748</width>
+    <height>386</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>50</y>
-      <width>511</width>
-      <height>181</height>
+      <x>520</x>
+      <y>60</y>
+      <width>211</width>
+      <height>231</height>
      </rect>
     </property>
    </widget>
@@ -95,9 +95,9 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>250</y>
-      <width>271</width>
+      <x>520</x>
+      <y>310</y>
+      <width>221</width>
       <height>16</height>
      </rect>
     </property>
@@ -105,6 +105,7 @@
      <string>Работает при поддержке лесных духов</string>
     </property>
    </widget>
+
    <widget class="QPushButton" name="pushButton_4">
     <property name="geometry">
      <rect>
@@ -118,14 +119,28 @@
      <string>Открыть QR</string>
     </property>
    </widget>
+
+   <widget class="QListView" name="postsList">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>60</y>
+      <width>481</width>
+      <height>231</height>
+     </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>616</width>
-     <height>23</height>
+     <width>748</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>

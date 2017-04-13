@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 #include <QMainWindow>
 
+#include <model/post.h>
+
 namespace Ui {
 class MainWindow;
 }
@@ -20,6 +22,8 @@ private:
 public slots:
     void updateText(const QString& text_);
     void updateQRString(const QString& str_);
+    void updatePostsList(QList<Post*>*posts);
+
 private slots:
     void on_textEdit_destroyed();
     void on_pushButton_clicked();

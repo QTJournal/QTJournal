@@ -4,6 +4,7 @@
 #include <QObject>
 #include <mainwindow.h>
 #include <TJAPI.h>
+#include <model/post.h>
 #include "HttpRequestWorker.h"
 
 class Controller : public QObject
@@ -21,6 +22,7 @@ private:
 signals:
     void updateText(QString);
     void updateQRString(QString);
+    void updatePostsList(QList<Post*>*);
 
 public slots:
     //handle ui actions
@@ -29,7 +31,7 @@ public slots:
     void handleGetInfoButton();
 
     //handle api responses
-    void handleGetInfoResult(HttpRequestWorker*);
+    void handleGetClubPostsResult(HttpRequestWorker*);
     void handleGetUserInfoResult(HttpRequestWorker*);
     void handleVerifyQRResult(HttpRequestWorker*);
 

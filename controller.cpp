@@ -2,7 +2,13 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValue>
+
 #include <QZXing.h>
+
+#include <QJsonArray>
+#include <model/parserutil.h>
+#include <model/post.h>
+
 Controller::Controller(MainWindow *mainWindow, QObject *parent) : QObject(parent)
 {
     this->mainWindow = mainWindow;
@@ -11,14 +17,20 @@ Controller::Controller(MainWindow *mainWindow, QObject *parent) : QObject(parent
     connect(mainWindow, SIGNAL(getUserInfoButtonClicked()), this, SLOT(handleUserInfoButton()));
     connect(mainWindow, SIGNAL(getInfoButtonClicked()), this, SLOT(handleGetInfoButton()));
     connect(mainWindow, SIGNAL(verifyQRButtonClicked(QString)), this, SLOT(handleVerifyQRButton(QString)));
+
     connect(mainWindow, SIGNAL(QRtoDecode(QStringList)), this, SLOT(decodeQR(QStringList)));
     connect(api, SIGNAL(getInfoExecutionFinished(HttpRequestWorker*)), this,
             SLOT(handleGetInfoResult(HttpRequestWorker*)));
+
+    connect(api, SIGNAL(getClubPostsExecutionFinished(HttpRequestWorker*)), this,
+            SLOT(handleGetClubPostsResult(HttpRequestWorker*)));
+
     connect(this, SIGNAL(updateText(QString)), mainWindow, SLOT(updateText(QString)));
     connect(this, SIGNAL(updateQRString(QString)), mainWindow, SLOT(updateQRString(QString)));
     connect(api, SIGNAL(getUserInfoExecutionFinished(HttpRequestWorker*)), this,
             SLOT(handleGetUserInfoResult(HttpRequestWorker*)));
     connect(api, SIGNAL(verifyQRFinished(HttpRequestWorker*)), this, SLOT(handleVerifyQRResult(HttpRequestWorker*)));
+    connect(this, SIGNAL(updatePostsList(QList<Post*>*)), mainWindow, SLOT(updatePostsList(QList<Post*>*)));
 }
 
 Controller::~Controller()
@@ -41,12 +53,12 @@ void Controller::handleVerifyQRButton(QString QRCode)
 void Controller::handleGetInfoButton()
 {
     qDebug() << "handleGetInfoButton()";
-    api->getInfo();
+    api->getClubPosts();
 }
 
-void Controller::handleGetInfoResult(HttpRequestWorker* worker)
+void Controller::handleGetClubPostsResult(HttpRequestWorker* worker)
 {
-    qDebug() << "handleGetInfoResult(HttpRequestWorker* worker)";
+    qDebug() << "handleGetClubPostsResult(HttpRequestWorker* worker)";
     if (worker->errorType != QNetworkReply::NoError) {
         qDebug() << worker->errorStr;
         emit updateText(worker->errorStr);
@@ -54,8 +66,22 @@ void Controller::handleGetInfoResult(HttpRequestWorker* worker)
         return;
     }
     QString result = worker->response;
+
+    QByteArray byteResult = worker->response;
+    QJsonDocument responseJson = QJsonDocument::fromJson(byteResult);
+    QJsonArray posts = responseJson.array();
+
+    QList<Post*>* postsList = new QList<Post*>();
+
+    for (int i = 0; i < posts.size(); i++) {
+        QJsonObject post = posts.at(i).toObject();
+        Post* postModel = ParserUtil::parsePost(post);
+        postsList->append(postModel);
+    }
+
     worker->deleteLater();
 
+    emit updatePostsList(postsList);
     emit updateText(result);
 }
 
