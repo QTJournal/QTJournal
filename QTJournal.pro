@@ -4,7 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network qml
+QT       += core gui network qml multimedia quick
+
+include(QZXing/src/QZXing.pri)
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

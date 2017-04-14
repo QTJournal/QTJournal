@@ -24,9 +24,10 @@ void TJAPI::verifyQR(QString QRcode)
     if(QRcode.size())
     {
         QString QRwithsalt=QRcode+this->SALT;
-        QString authhash = QString(QCryptographicHash::hash((QRwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
-        qDebug()<<authhash;
-        input.addVar("hash", authhash);
+        QString QRhash = QString(QCryptographicHash::hash((QRwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
+        qDebug()<<QRhash;
+        input.addVar("hash", QRhash);
+
         input.addVar("token", QRcode);
         connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
                 SIGNAL(verifyQRFinished(HttpRequestWorker*)));

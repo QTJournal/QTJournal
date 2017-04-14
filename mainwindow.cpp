@@ -4,14 +4,19 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValue>
+
+#include <QFileDialog>
+
 #include <QStringListModel>
 #include <QDebug>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setWindowTitle("SUPER TJ Client");
+
     //api = new TJAPI();
     //connect(api, SIGNAL(responseIsHere(QString)), this, SLOT(updateText(QString)));
     //connect(api,SIGNAL(updateTextSignal(QString)),this,SLOT(updateText(QString)));
@@ -39,7 +44,10 @@ void MainWindow::updatePostsList(QList<Post *> *posts)
     ui->postsList->setModel(listModel);
     delete posts;
 }
-
+void MainWindow::updateQRString(const QString& str_)
+{
+    ui->plainTextEdit->appendPlainText(str_);
+}
 void MainWindow::on_textEdit_destroyed()
 {
 
@@ -61,4 +69,15 @@ void MainWindow::on_pushButton_3_clicked()
 {
     //api->getUserInfo();
     emit getUserInfoButtonClicked();
+}
+void MainWindow::on_pushButton_4_clicked()
+{
+    QFileDialog dialog(this);
+    QStringList FileNames;
+    dialog.setFileMode(QFileDialog::AnyFile);
+    dialog.setNameFilter(tr("Images (*.png *.xpm *.jpg)"));
+    if (dialog.exec()){
+        FileNames = dialog.selectedFiles();
+    }
+    emit QRtoDecode(FileNames);
 }

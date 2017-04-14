@@ -2,9 +2,13 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValue>
+
+#include <QZXing.h>
+
 #include <QJsonArray>
 #include <model/parserutil.h>
 #include <model/post.h>
+
 Controller::Controller(MainWindow *mainWindow, QObject *parent) : QObject(parent)
 {
     this->mainWindow = mainWindow;
@@ -13,9 +17,14 @@ Controller::Controller(MainWindow *mainWindow, QObject *parent) : QObject(parent
     connect(mainWindow, SIGNAL(getUserInfoButtonClicked()), this, SLOT(handleUserInfoButton()));
     connect(mainWindow, SIGNAL(getInfoButtonClicked()), this, SLOT(handleGetInfoButton()));
     connect(mainWindow, SIGNAL(verifyQRButtonClicked(QString)), this, SLOT(handleVerifyQRButton(QString)));
+
+    connect(mainWindow, SIGNAL(QRtoDecode(QStringList)), this, SLOT(decodeQR(QStringList)));
+
     connect(api, SIGNAL(getClubPostsExecutionFinished(HttpRequestWorker*)), this,
             SLOT(handleGetClubPostsResult(HttpRequestWorker*)));
+
     connect(this, SIGNAL(updateText(QString)), mainWindow, SLOT(updateText(QString)));
+    connect(this, SIGNAL(updateQRString(QString)), mainWindow, SLOT(updateQRString(QString)));
     connect(api, SIGNAL(getUserInfoExecutionFinished(HttpRequestWorker*)), this,
             SLOT(handleGetUserInfoResult(HttpRequestWorker*)));
     connect(api, SIGNAL(verifyQRFinished(HttpRequestWorker*)), this, SLOT(handleVerifyQRResult(HttpRequestWorker*)));
@@ -117,4 +126,10 @@ void Controller::handleVerifyQRResult(HttpRequestWorker* worker)
     this->api->setToken(token);
     emit updateText(result);
     qDebug() << "handleVerifyQRResult(HttpRequestWorker* worker)";
+}
+void Controller::decodeQR(QStringList FileList) {
+    QImage img(FileList[0]);
+    QZXing decoder;
+    QString result = decoder.decodeImage(img);
+    emit updateQRString(result);
 }

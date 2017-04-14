@@ -21,6 +21,7 @@ private:
 
 signals:
     void updateText(QString);
+    void updateQRString(QString);
     void updatePostsList(QList<Post*>*);
 
 public slots:
@@ -33,6 +34,9 @@ public slots:
     void handleGetClubPostsResult(HttpRequestWorker*);
     void handleGetUserInfoResult(HttpRequestWorker*);
     void handleVerifyQRResult(HttpRequestWorker*);
+
+    //handle library result
+    void decodeQR(QStringList);
 };
 
 #endif // CONTROLLER_H
