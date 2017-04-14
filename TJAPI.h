@@ -9,9 +9,6 @@ class TJAPI : public QObject
 public:
     TJAPI();
     void verifyQR(QString QRcode);
-    void getInfo();
-    void getAccountPosts(int account=0);
-
     void authorize(QString socialId, int socialType, QString token);
     void getClubPosts(int count=30, int offset=0, int type=0, QString sortMode="mainpage");
     void getUserInfo(int id=0);
@@ -19,7 +16,6 @@ public:
     void getAccountComments(int userId=0, int count=30, int offset=0);
     void getNotifications();
     void getFavorites(int objectType, int count=30, int offset=0);
-
     void setToken(QByteArray token);
     void addFavorite(int objectId, int objectType);
     void removeFavorite(int objectId, int objectType);
