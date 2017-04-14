@@ -71,8 +71,7 @@ public:
     QByteArray response;
     QNetworkReply::NetworkError errorType;
     QString errorStr;
-
-
+    void setUseragent(QString);
     QString httpAttributeEncode(QString attribute_name, QString input);
     void execute(HttpRequestInput *input);
 
@@ -81,6 +80,7 @@ signals:
 
 private:
     QNetworkAccessManager *manager;
+    QString useragent="test client";
 
 private slots:
     void managerFinished(QNetworkReply *reply);

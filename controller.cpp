@@ -13,6 +13,18 @@ Controller::Controller(MainWindow *mainWindow, QObject *parent) : QObject(parent
 {
     this->mainWindow = mainWindow;
     this->api = new TJAPI();
+    QJsonObject device;
+    device["id"]="12345";
+    device["app_version"]="1.0.0";
+    device["os"]="iOS";
+    device["app_build"]="0";
+    device["locale"]="ru";
+    device["os_version"]="1.0.0";
+    device["name"]="Balalaika";
+    QJsonObject useragent;
+    useragent["device"]=device;
+    api->setUseragent(QString(QJsonDocument(useragent).toJson(QJsonDocument::Compact)));
+
 
     connect(mainWindow, SIGNAL(getUserInfoButtonClicked()), this, SLOT(handleUserInfoButton()));
     connect(mainWindow, SIGNAL(getInfoButtonClicked()), this, SLOT(handleGetInfoButton()));

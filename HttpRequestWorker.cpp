@@ -60,6 +60,10 @@ void HttpRequestInput::addFile(const QString &variableName, const QString &local
     files.append(file);
 }
 
+void HttpRequestWorker::setUseragent(QString agent)
+{
+    this->useragent=agent;
+}
 
 HttpRequestWorker::HttpRequestWorker(QObject *parent)
     : QObject(parent), manager(NULL)
@@ -278,7 +282,7 @@ void HttpRequestWorker::execute(HttpRequestInput *input) {
     QNetworkRequest request = QNetworkRequest(QUrl(input->urlStr));
     //! QNetworkRequest::UserAgentHeader is assosiated known header
     //request.setRawHeader("User-Agent", "Frumkin K. E. Test REST Client");
-    request.setHeader(QNetworkRequest::UserAgentHeader, "Frumkin K. E. Test REST Client");
+    request.setHeader(QNetworkRequest::UserAgentHeader, this->useragent);
 
     if (input->varLayout == URL_ENCODED) {
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");

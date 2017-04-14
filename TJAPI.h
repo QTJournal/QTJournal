@@ -42,13 +42,14 @@ public:
     void likeComment(int entryId, bool sign, QString hash);
     void getComments(QString section, int paperId);
     void search(QString q, int count=30, int offset=0, int type=1);
+    void setUseragent(QString);
     QByteArray getToken();
 private:
     QString API_HOST = "api.tjournal.ru";
     QString API_VERSION = "2.3";
     QString SALT = "hDv#L9Om>iHfAdT5^6uIy?&";
     QString API_URL = QString("https://%1/%2/").arg(API_HOST, API_VERSION);
-
+    QString myuseragent="{\"device\":{\"id\":\"12345\",\"app_version\":\"1.0.0\",\"os\":\"Balalaika\",\"app_build\":\"144\",\"locale\":\"ru\",\"os_version\":\"1.0.0\",\"name\":\"Testing Device\"}}";
     QByteArray token;
     HttpRequestInput createRequest(QString url, QString method);
 signals:
