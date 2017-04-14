@@ -10,7 +10,6 @@ public:
     TJAPI();
     void verifyQR(QString QRcode);
     void getInfo();
-    void getUserInfo();
     void getAccountPosts(int account=0);
 
     void authorize(QString socialId, int socialType, QString token);
