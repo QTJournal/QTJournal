@@ -1,7 +1,7 @@
 #include "TJAPI.h"
 TJAPI::TJAPI()
 {
-    //apiurl=
+
 }
 
 HttpRequestInput TJAPI::createRequest(QString url, QString method)
@@ -19,7 +19,7 @@ HttpRequestInput TJAPI::createRequest(QString url, QString method)
 
 void TJAPI::verifyQR(QString QRcode)
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/verifyQR", "POST");
     if(QRcode.size())
     {
@@ -37,7 +37,7 @@ void TJAPI::verifyQR(QString QRcode)
 
 void TJAPI::authorize(QString socialId, int socialType, QString token)
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/authorize", "POST");
     QString socialwithsalt=socialId+socialType+token+this->SALT;
     QString authhash = QString(QCryptographicHash::hash((socialwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
@@ -53,7 +53,7 @@ void TJAPI::authorize(QString socialId, int socialType, QString token)
 
 void TJAPI::getUserInfo(int id)
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/info", "GET");
 
     if(id)
@@ -90,7 +90,7 @@ void TJAPI::handleResult(HttpRequestWorker * worker_)
 
 void TJAPI::getClubPosts(int count, int offset, int type, QString sortMode)
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("club", "GET");
     if (count!=30)
         input.addVar("count", QString::number(count));
@@ -105,9 +105,105 @@ void TJAPI::getClubPosts(int count, int offset, int type, QString sortMode)
     worker->execute(&input);
 }
 
+void TJAPI::getClubPost(int entryId)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("club/item", "GET");
+    input.addVar("entryId", QString::number(entryId));
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getClubPostFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::likeClubPost(int entryId, bool sign, QString hash)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("club/like", "POST");
+    input.addVar("entryId", QString::number(entryId));
+    input.addVar("sign", sign?"1":"-1");
+    input.addVar("hash", hash);
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(likeClubPostFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::newClubPost(QString title, QString url, QString content, QList<QString> file_attaches, QList<QString> files)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("club/new", "POST");
+    input.addVar("title", title);
+    input.addVar("url", url);
+    input.addVar("content", content);
+    if(file_attaches.size()+files.size()>2)
+        //exception
+    for(int i=0; i<file_attaches.size(); i++)
+    {
+        QFileInfo fileInfo (file_attaches[i]);
+        QMimeDatabase db;
+        QMimeType fileType = db.mimeTypeForFile(file_attaches[i]);
+        //TODO: add exceptions
+        input.addFile("file_attaches["+QString::number(i)+"]", fileInfo.filePath(), NULL, fileType.name());
+    }
+    for(int i=0; i<files.size(); i++)
+        input.addVar("files["+QString::number(i)+"]", files[i]);
+    input.varLayout=MULTIPART;
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getClubPostFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::newComment(QString message, int paperId, QList<QString> file_attaches, QList<QString> files, int inReplyToCommentId)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("comments/new", "POST");
+    input.addVar("message", message);
+    input.addVar("paperId", QString::number(paperId));
+    if (inReplyToCommentId)
+        input.addVar("inReplyToCommentId", QString::number(inReplyToCommentId));
+    if(file_attaches.size()+files.size()>2)
+        //exception
+    for(int i=0; i<file_attaches.size(); i++)
+    {
+        QFileInfo fileInfo (file_attaches[i]);
+        QMimeDatabase db;
+        QMimeType fileType = db.mimeTypeForFile(file_attaches[i]);
+        //TODO: add exceptions
+        input.addFile("file_attaches["+QString::number(i)+"]", fileInfo.filePath(), NULL, fileType.name());
+    }
+    for(int i=0; i<files.size(); i++)
+        input.addVar("files["+QString::number(i)+"]", files[i]);
+    input.varLayout=MULTIPART;
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(newCommentFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::likeComment(int entryId, bool sign, QString hash)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("comments/like", "POST");
+    input.addVar("entryId", QString::number(entryId));
+    input.addVar("sign", sign?"1":"-1");
+    input.addVar("hash", hash);
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(likeCommentFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::getComments(QString section, int paperId)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("comments", "GET");
+    input.addVar("section", section);
+    input.addVar("paperId", QString::number(paperId));
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getCommentsFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
 void TJAPI::getAccountPosts(int userId, int count, int offset)
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/posts", "GET");
     if(userId)
         input.addVar("userId", QString::number(userId));
@@ -120,9 +216,25 @@ void TJAPI::getAccountPosts(int userId, int count, int offset)
     worker->execute(&input);
 }
 
+void TJAPI::search(QString q, int count, int offset, int type)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("search", "GET");
+    input.addVar("q", q);
+    if (count!=30)
+        input.addVar("count", QString::number(count));
+    if (offset)
+        input.addVar("offset", QString::number(offset));
+    if (type!=1)
+        input.addVar("type", QString::number(type));
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(searchFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
 void TJAPI::getAccountComments(int userId, int count, int offset)
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/comments", "GET");
     if(userId)
         input.addVar("userId", QString::number(userId));
@@ -137,7 +249,7 @@ void TJAPI::getAccountComments(int userId, int count, int offset)
 
 void TJAPI::getNotifications()
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/notifications", "GET");
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(getNotificationsFinished(HttpRequestWorker*)));
@@ -146,7 +258,7 @@ void TJAPI::getNotifications()
 
 void TJAPI::getFavorites(int objectType, int count, int offset)
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("favorites", "GET");
     if(objectType)
         input.addVar("objectType", QString::number(objectType));
@@ -161,7 +273,7 @@ void TJAPI::getFavorites(int objectType, int count, int offset)
 
 void TJAPI::addFavorite(int objectId, int objectType)
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("favorites/new", "POST");
     input.addVar("objectId", QString::number(objectId));
     input.addVar("objectType", QString::number(objectType));
@@ -172,7 +284,7 @@ void TJAPI::addFavorite(int objectId, int objectType)
 
 void TJAPI::removeFavorite(int objectId, int objectType)
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("favorites/remove", "POST");
     input.addVar("objectId", QString::number(objectId));
     input.addVar("objectType", QString::number(objectType));
@@ -183,17 +295,18 @@ void TJAPI::removeFavorite(int objectId, int objectType)
 
 void TJAPI::getAccountSettings()
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/settings", "GET");
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(getAccountSettingsFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
-void TJAPI::setAccountSettings(QString &settings)
+
+void TJAPI::setAccountSettings(QList <QString> settings)
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("account/settings", "POST");
-    foreach (QString sett, settings)
+    for (QString sett : settings)
     {
         input.addVar("notifications[email][]", sett);
     }
@@ -204,7 +317,7 @@ void TJAPI::setAccountSettings(QString &settings)
 
 void TJAPI::sendMisprint(QString text, QString url)
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("misprints/new", "POST");
     input.addVar("text", text);
     input.addVar("url", url);
@@ -215,10 +328,116 @@ void TJAPI::sendMisprint(QString text, QString url)
 
 void TJAPI::urlReval(QString url)
 {
-    worker = new HttpRequestWorker(this);
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
     HttpRequestInput input = this->createRequest("content/reveal", "GET");
     input.addVar("url", url);
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(urlRevalFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
+
+void TJAPI::getNews(int listId, int count, QString interval)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("news", "GET");
+    input.addVar("listId", QString::number(listId));
+    if(count!=50)
+        input.addVar("count", QString::number(count));
+    if (interval!="popular")
+        input.addVar("interval", interval);
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getNewsFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::getNewsLists(int listId, bool showSources)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("news/lists", "GET");
+    input.addVar("listId", QString::number(listId));
+    if(!showSources)
+        input.addVar("showSources", "0");
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getNewsListsFinished(HttpRequestInput*)));
+    worker->execute(&input);
+}
+
+void TJAPI::setNewsSettings(QList <QString> settingsML, QList <QString> settings)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("news/settings", "POST");
+    for (QString sett : settingsML)
+    {
+        input.addVar("settings[mailList]", sett);
+    }
+    for (QString sett : settings)
+    {
+        input.addVar("settings[lists][]", sett);
+    }
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(setNewsSettingsFinished(HttpRequestInput*)));
+    worker->execute(&input);
+}
+
+void TJAPI::setNewsListExcludes(int listId, QList <int> sources)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("news/listExcludes", "POST");
+    input.addVar("listId", QString::number(listId));
+    for (int source : sources)
+    {
+        input.addVar("sources[]", QString::number(source));
+    }
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(setNewsListExcludesFinished(HttpRequestInput*)));
+    worker->execute(&input);
+}
+
+void TJAPI::getTweets(int count, int offset, int listId, QString interval)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("news", "GET");
+    if(count!=50)
+        input.addVar("count", QString::number(count));
+    if(offset)
+        input.addVar("offset", QString::number(offset));
+    if(listId!=1)
+        input.addVar("listId", QString::number(listId));
+    if (interval!="fresh")
+        input.addVar("interval", interval);
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getTweetsFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::getBlacklist()
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("tweets/blacklist", "GET");
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(getBlacklistFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::addBlacklisted(QString tweopleId, QString hash)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("tweets/blacklistAdd", "POST");
+    input.addVar("tweopleId", tweopleId);
+    input.addVar("hash", hash);
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(addBlecklistedinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
+void TJAPI::removeBlacklisted(QString tweopleId, QString hash)
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    HttpRequestInput input = this->createRequest("tweets/blacklistRemove", "POST");
+    input.addVar("tweopleId", tweopleId);
+    input.addVar("hash", hash);
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(addBlacklistedFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
+
