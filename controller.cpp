@@ -142,6 +142,7 @@ void Controller::handleVerifyQRResult(HttpRequestWorker* worker)
 void Controller::decodeQR(QStringList FileList) {
     QImage img(FileList[0]);
     QZXing decoder;
-    QString result = decoder.decodeImage(img);
+    QString result = decoder.decodeImage(img).split('|')[1];
+
     emit updateQRString(result);
 }
