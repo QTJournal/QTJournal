@@ -1,21 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QtWidgets>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtCore/QJsonValue>
 
-#include <QFileDialog>
-
-#include <QStringListModel>
-#include <QDebug>
-
-#include <QStandardItemModel>
-
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-
-#include <QListWidgetItem>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -114,4 +99,10 @@ void MainWindow::on_pushButton_4_clicked()
         FileNames = dialog.selectedFiles();
     }
     emit QRtoDecode(FileNames);
+}
+
+void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
+{
+    qDebug()<<"clicked";
+    item->setBackgroundColor("yellow");
 }

@@ -1,7 +1,22 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include <QMainWindow>
+#include <QtWidgets>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
+#include <QtCore/QJsonValue>
 
+#include <QFileDialog>
+
+#include <QStringListModel>
+#include <QDebug>
+
+#include <QStandardItemModel>
+
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+
+#include <QListWidgetItem>
 #include <model/post.h>
 
 namespace Ui {
@@ -30,6 +45,8 @@ private slots:
     void on_pushButton_2_clicked();
     void on_pushButton_3_clicked();
     void on_pushButton_4_clicked();
+    void on_listWidget_itemClicked(QListWidgetItem *item);
+
 signals:
     void getInfoButtonClicked();
     void verifyQRButtonClicked(QString);
