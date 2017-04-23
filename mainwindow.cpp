@@ -10,6 +10,13 @@
 #include <QStringListModel>
 #include <QDebug>
 
+#include <QStandardItemModel>
+
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+
+#include <QListWidgetItem>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -35,15 +42,41 @@ void MainWindow::updateText(const QString& text_)
 void MainWindow::updatePostsList(QList<Post *> *posts)
 {
     QStringList postsNames;
+
     for (int i = 0; i < posts->size(); i++) {
         postsNames << posts->at(i)->getTitle();
+
+        QLabel* postTitle = new QLabel(posts->at(i)->getTitle());
+        postTitle->setWordWrap(true);
+        QLabel* postAuthor = new QLabel(posts->at(i)->getAuthor()->getName());
+
+        QVBoxLayout* layout = new QVBoxLayout();
+        QHBoxLayout* layout2 = new QHBoxLayout();
+
+        QListWidgetItem* item = new QListWidgetItem();
+
+        QWidget* widget = new QWidget();
+        QWidget* widget2 = new QWidget();
+
+        layout->addWidget(postAuthor);
+        layout->addWidget(postTitle);
+        layout->addWidget(widget2);
+
+        widget->setLayout(layout);
+        widget2->setLayout(layout2);
+
+        item->setSizeHint(QSize(item->sizeHint().height(),ui->listWidget->sizeHintForRow(0)));
+        layout->setSizeConstraint(QLayout::SetMinimumSize);
+
+        ui->listWidget->addItem(item);
+        ui->listWidget->setItemWidget(item,widget);
+
         posts->at(i)->deleteLater();
     }
-    QStringListModel* listModel = new QStringListModel();
-    listModel->setStringList(postsNames);
-    ui->postsList->setModel(listModel);
+
     delete posts;
 }
+
 void MainWindow::updateQRString(const QString& str_)
 {
     ui->plainTextEdit->appendPlainText(str_);

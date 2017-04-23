@@ -52,7 +52,7 @@ Post *ParserUtil::parsePost(QJsonObject post)
     postModel->setTitle(post["title"].toString());
     postModel->setUrl(QUrl(post["url"].toString()));
 
-    QDateTime date = QDateTime::fromSecsSinceEpoch(post["date"].toInt());
+    QDateTime date = QDateTime::fromMSecsSinceEpoch(post["date"].toInt());
     postModel->setDate(date);
 
     postModel->setIntro(post["intro"].toString());

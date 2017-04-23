@@ -105,7 +105,6 @@
      <string>Работает при поддержке лесных духов</string>
     </property>
    </widget>
-
    <widget class="QPushButton" name="pushButton_4">
     <property name="geometry">
      <rect>
@@ -119,8 +118,7 @@
      <string>Открыть QR</string>
     </property>
    </widget>
-
-   <widget class="QListView" name="postsList">
+   <widget class="QListWidget" name="listWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -128,9 +126,6 @@
       <width>481</width>
       <height>231</height>
      </rect>
-    </property>
-    <property name="editTriggers">
-     <set>QAbstractItemView::NoEditTriggers</set>
     </property>
    </widget>
   </widget>
@@ -140,7 +135,7 @@
      <x>0</x>
      <y>0</y>
      <width>748</width>
-     <height>21</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>
