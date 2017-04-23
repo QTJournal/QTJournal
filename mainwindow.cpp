@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QtWidgets/QDesktopWidget>
+#include <QtWidgets>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValue>
@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->listWidget->verticalScrollBar()->setSingleStep(qMax(fontMetrics().height(), 2));
     setWindowTitle("SUPER TJ Client");
 
     //api = new TJAPI();
