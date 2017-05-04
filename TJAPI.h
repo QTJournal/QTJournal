@@ -43,6 +43,7 @@ public:
     void getComments(QString section, int paperId);
     void search(QString q, int count=30, int offset=0, int type=1);
     void setUseragent(QString);
+    void activateTrial();
     QByteArray getToken();
 private:
     QString API_HOST = "api.tjournal.ru";
@@ -82,6 +83,7 @@ signals:
     void getBlacklistFinished(HttpRequestInput *worker);
     void addBlacklistedFinished(HttpRequestInput *worker);
     void removeBlacklistedFinished(HttpRequestInput *worker);
+    void activateTrialFinished(HttpRequestInput *worker);
 ;private slots:
     void handleResult(HttpRequestWorker *worker_);
 };

@@ -505,3 +505,13 @@ void TJAPI::removeBlacklisted(QString tweopleId, QString hash)
     worker->execute(&input);
 }
 
+void TJAPI::activateTrial()
+{
+    HttpRequestWorker *worker = new HttpRequestWorker(this);
+    worker->setUseragent(this->myuseragent);
+
+    HttpRequestInput input = this->createRequest("purchases/trial", "POST");
+    connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
+            SIGNAL(activateTrialFinished(HttpRequestWorker*)));
+    worker->execute(&input);
+}
