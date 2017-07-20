@@ -105,13 +105,9 @@ void TJAPI::getClubPosts(int count, int offset, int type, QString sortMode)
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     worker->setUseragent(this->myuseragent);
 
-    HttpRequestInput input = this->createRequest("club", "GET");
-    if (count!=30)
-        input.addVar("count", QString::number(count));
-    if (offset)
-        input.addVar("offset", QString::number(offset));
-    if (type)
-        input.addVar("type", QString::number(type));
+    HttpRequestInput input = this->createRequest("timeline/club", "GET");
+    input.addVar("count", QString::number(count));
+    input.addVar("offset", QString::number(offset));
     if(sortMode!="mainpage")
         input.addVar("sortMode", sortMode);
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
