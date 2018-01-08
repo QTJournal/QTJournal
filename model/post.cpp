@@ -30,16 +30,6 @@ void Post::setTitle(const QString &value)
     title = value;
 }
 
-QUrl Post::getUrl() const
-{
-    return url;
-}
-
-void Post::setUrl(const QUrl &value)
-{
-    url = value;
-}
-
 QDateTime Post::getDate() const
 {
     return date;
@@ -218,6 +208,16 @@ User *Post::getPublicAuthor() const
 void Post::setPublicAuthor(User *value)
 {
     publicAuthor = value;
+}
+
+QList<Badge *> *Post::getBadges() const
+{
+    return badges;
+}
+
+void Post::setBadges(QList<Badge *> *value)
+{
+    badges = value;
 }
 
 QString Post::getEntryJSON() const

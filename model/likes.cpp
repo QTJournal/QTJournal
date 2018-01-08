@@ -44,13 +44,3 @@ void Likes::setIsHidden(bool value)
 {
     isHidden = value;
 }
-
-QString Likes::getHash() const
-{
-    return hash;
-}
-
-void Likes::setHash(const QString &value)
-{
-    hash = value;
-}

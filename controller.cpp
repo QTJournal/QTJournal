@@ -79,7 +79,7 @@ void Controller::handleGetClubPostsResult(HttpRequestWorker* worker)
 
     QByteArray byteResult = worker->response;
     QJsonDocument responseJson = QJsonDocument::fromJson(byteResult);
-    QJsonArray posts = responseJson.array();
+    QJsonArray posts = responseJson.object()["result"].toArray();
 
     QList<Post*>* postsList = new QList<Post*>();
 

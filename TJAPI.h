@@ -84,7 +84,7 @@ signals:
     void addBlacklistedFinished(HttpRequestInput *worker);
     void removeBlacklistedFinished(HttpRequestInput *worker);
     void activateTrialFinished(HttpRequestInput *worker);
-;private slots:
+private slots:
     void handleResult(HttpRequestWorker *worker_);
 };
 
