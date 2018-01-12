@@ -47,10 +47,10 @@ public:
     QByteArray getToken();
 private:
     QString API_HOST = "api.tjournal.ru";
-    QString API_VERSION = "1";
+    QString API_VERSION = "1.3";
     QString SALT = "hDv#L9Om>iHfAdT5^6uIy?&";
     QString API_URL = QString("https://%1/v%2/").arg(API_HOST, API_VERSION);
-    QString myuseragent="{\"device\":{\"id\":\"12345\",\"app_version\":\"1.0.0\",\"os\":\"Balalaika\",\"app_build\":\"144\",\"locale\":\"ru\",\"os_version\":\"1.0.0\",\"name\":\"Testing Device\"}}";
+    QString myuseragent="QTJournal/1.00 (Balalaika; BolgenOS/8.0; ru_RU; 1920x1080)";
     QByteArray token;
     HttpRequestInput createRequest(QString url, QString method);
 signals:

@@ -28,13 +28,13 @@ void TJAPI::verifyQR(QString QRcode)
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     worker->setUseragent(this->myuseragent);
 
-    HttpRequestInput input = this->createRequest("account/verifyQR", "POST");
+    HttpRequestInput input = this->createRequest("auth/qr", "POST");
     if(QRcode.size())
     {
-        QString QRwithsalt=QRcode+this->SALT;
-        QString QRhash = QString(QCryptographicHash::hash((QRwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
-        qDebug()<<QRhash;
-        input.addVar("hash", QRhash);
+        //QString QRwithsalt=QRcode+this->SALT;
+       // QString QRhash = QString(QCryptographicHash::hash((QRwithsalt.toLocal8Bit()),QCryptographicHash::Md5).toHex());
+        //qDebug()<<QRhash;
+        //input.addVar("hash", QRhash);
 
         input.addVar("token", QRcode);
         connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
@@ -66,7 +66,7 @@ void TJAPI::getUserInfo(int id)
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     worker->setUseragent(this->myuseragent);
 
-    HttpRequestInput input = this->createRequest("account/info", "GET");
+    HttpRequestInput input = this->createRequest("user/me", "GET");
 
     if(id)
         input.addVar("userId", QString::number(id));

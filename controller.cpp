@@ -13,17 +13,18 @@ Controller::Controller(MainWindow *mainWindow, QObject *parent) : QObject(parent
 {
     this->mainWindow = mainWindow;
     this->api = new TJAPI();
-    QJsonObject device;
-    device["id"]="12345";
+    QMap <QString, QString> device;
+    device["app_name"]="QTJournal";
     device["app_version"]="1.0.0";
-    device["os"]="iOS";
-    device["app_build"]="0";
-    device["locale"]="ru";
+    device["os"]="BolgenOS";
+    device["screen_width"]="1920";
+    device["screen_height"]="1080";
+    device["locale"]="ru_RU";
     device["os_version"]="1.0.0";
     device["name"]="Balalaika";
-    QJsonObject useragent;
-    useragent["device"]=device;
-    api->setUseragent(QString(QJsonDocument(useragent).toJson(QJsonDocument::Compact)));
+    QString useragent;
+    useragent=device["app_name"]+"/"+device["app_version"]+" ("+device["name"]+"; "+device["os"]+"/"+device["os_version"]+"; "+device["locale"]+"; "+device["screen_width"]+"x"+device["screen_height"]+")";
+    api->setUseragent(useragent);
 
 
     connect(mainWindow, SIGNAL(getUserInfoButtonClicked()), this, SLOT(handleUserInfoButton()));
@@ -113,19 +114,8 @@ void Controller::handleGetUserInfoResult(HttpRequestWorker *worker)
 void Controller::handleVerifyQRResult(HttpRequestWorker* worker)
 {
     QByteArray result = worker->response;
-    QJsonDocument responseJson = QJsonDocument::fromJson(result/*, QJsonParseError *error = Q_NULLPTR*/); //TODO add error check
-    QJsonObject responseJsonObject = responseJson.object();
-    QJsonValue tokenJsonValue = responseJsonObject.value(QString("sessionId"));
-    qDebug()<<result;
-
-    if (tokenJsonValue.type() == QJsonValue::Undefined) {
-        //updateText("there is no token in response");
-        emit updateText("there is no token in response");
-        worker->deleteLater();
-        return;
-    }
-
-    QByteArray token = tokenJsonValue.toString().toLatin1();
+    QByteArray token = worker->token;
+     qDebug() << token;
     if (token.isNull()) {
         emit updateText("token contains illegal non-Latin1 characters");
         worker->deleteLater();

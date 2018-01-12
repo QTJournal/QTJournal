@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QString>
 #include <QMap>
+#include <QList>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
@@ -69,6 +70,7 @@ public:
     explicit HttpRequestWorker(QObject *parent = 0);
     ~HttpRequestWorker();
     QByteArray response;
+    QByteArray token;
     QNetworkReply::NetworkError errorType;
     QString errorStr;
     void setUseragent(QString);
