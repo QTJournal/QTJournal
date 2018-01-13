@@ -48,10 +48,6 @@ HEADERS  += mainwindow.h \
     model/cover.h \
     model/externallink.h \
     model/likes.h \
-    model/cover_копия.h \
-    model/cover_копия1.h \
-    model/cover_копия2.h \
-    model/cover_копия3.h \
     model/badge.h
 
 FORMS    += mainwindow.ui
