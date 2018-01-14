@@ -5,11 +5,13 @@
 #include "externallink.h"
 #include "likes.h"
 #include "user.h"
+#include "badge.h"
 
 #include <QDateTime>
 #include <QObject>
 #include <QString>
 #include <QUrl>
+#include <QList>
 
 class Post : public QObject
 {
@@ -27,9 +29,6 @@ public:
 
     QString getTitle() const;
     void setTitle(const QString &value);
-
-    QUrl getUrl() const;
-    void setUrl(const QUrl &value);
 
     QDateTime getDate() const;
     void setDate(const QDateTime &value);
@@ -88,11 +87,11 @@ public:
 private:
     int id;
     QString title;
-    QUrl url;
     QDateTime date;
     //dateRFC
     User* author;
     User* publicAuthor;
+    QList<Badge *>* badges;
     PostTypes type;
     QString intro;
     Cover* cover;
@@ -138,6 +137,8 @@ public:
     void setType(const int value);
     QString getEntryJSON() const;
     void setEntryJSON(const QString &value);
+    QList<Badge *> *getBadges() const;
+    void setBadges(QList<Badge *> *value);
 };
 
 #endif // POST_H

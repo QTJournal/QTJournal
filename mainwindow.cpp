@@ -34,13 +34,20 @@ void MainWindow::updateText(const QString& text_)
 
 void MainWindow::updatePostsList(QList<Post *> *posts)
 {
-    QStringList postsNames;
+    QStringList postsLines;
     for (int i = 0; i < posts->size(); i++) {
-        postsNames << posts->at(i)->getTitle();
+        Post* post = posts->at(i);
+        QString postLine = post->getTitle();
+        if (!post->getBadges()->isEmpty()) {
+            postLine.append(" [")
+                    .append(post->getBadges()->at(0)->getText())
+                    .append("]");
+        }
+        postsLines << postLine;
         posts->at(i)->deleteLater();
     }
     QStringListModel* listModel = new QStringListModel();
-    listModel->setStringList(postsNames);
+    listModel->setStringList(postsLines);
     ui->postsList->setModel(listModel);
     delete posts;
 }

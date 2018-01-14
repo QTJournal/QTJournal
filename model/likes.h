@@ -22,15 +22,11 @@ public:
     bool getIsHidden() const;
     void setIsHidden(bool value);
 
-    QString getHash() const;
-    void setHash(const QString &value);
-
 private:
     int count;
     int sum;
     int isLiked;
     bool isHidden;
-    QString hash;
 };
 
 #endif // LIKES_H

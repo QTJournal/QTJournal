@@ -2,15 +2,14 @@
 #include "parserutil.h"
 
 #include <QJsonObject>
+#include <QJsonArray>
 
 User *ParserUtil::parseUser(QJsonObject user)
 {
     User* userModel = new User();
     userModel->setId(user["id"].toInt());
     userModel->setName(user["name"].toString());
-    userModel->setProfileImageUrl(QUrl(user["profile_image_url"].toString()));
-    userModel->setProfileBigImageUrl(QUrl(user["profile_big_image_url"].toString()));
-    userModel->setUrl(QUrl(user["url"].toString()));
+    userModel->setProfileImageUrl(QUrl(user["avatar_url"].toString()));
     return userModel;
 }
 
@@ -29,10 +28,9 @@ Likes *ParserUtil::parseLikes(QJsonObject likes)
 {
     Likes *likesModel = new Likes();
     likesModel->setCount(likes["count"].toInt());
-    likesModel->setSum(likes["sum"].toInt());
-    likesModel->setIsLiked(likes["isLiked"].toInt());
-    likesModel->setIsHidden(likes["isHidden"].toBool());
-    likesModel->setHash(likes["hash"].toString());
+    likesModel->setSum(likes["summ"].toInt());
+    likesModel->setIsLiked(likes["is_liked"].toInt());
+    likesModel->setIsHidden(likes["is_hidden"].toBool());
     return likesModel;
 }
 
@@ -50,7 +48,8 @@ Post *ParserUtil::parsePost(QJsonObject post)
     Post *postModel = new Post();
     postModel->setId(post["id"].toInt());
     postModel->setTitle(post["title"].toString());
-    postModel->setUrl(QUrl(post["url"].toString()));
+
+    postModel->setBadges(ParserUtil::parseBadges(post["badges"].toArray()));
 
     QDateTime date = QDateTime::fromSecsSinceEpoch(post["date"].toInt());
     postModel->setDate(date);
@@ -58,7 +57,7 @@ Post *ParserUtil::parsePost(QJsonObject post)
     postModel->setIntro(post["intro"].toString());
     postModel->setEntryJSON(post["entryJSON"].toString());
     postModel->setIsReadMore(post["isReadMore"].toBool());
-    postModel->setHits(post["hits"].toInt());
+    postModel->setHits(post["hitsCount"].toInt());
     postModel->setCommentsCount(post["commentsCount"].toInt());
     postModel->setIsFavorited(post["isFavorited"].toBool());
     postModel->setMobileAppUrl(QUrl(post["mobileAppUrl"].toString()));
@@ -79,6 +78,22 @@ Post *ParserUtil::parsePost(QJsonObject post)
 
     postModel->setType(post["type"].toInt());
     return postModel;
+}
+
+QList<Badge*> *ParserUtil::parseBadges(QJsonArray badges)
+{
+    QList<Badge*>* badgesList = new QList<Badge*>();
+    for (int i = 0; i < badges.size(); i++) {
+        QJsonObject badgeJson = badges.at(i).toObject();
+        Badge* badge = new Badge();
+        badge->setType(badgeJson["type"].toString());
+        badge->setText(badgeJson["text"].toString());
+        badge->setColor(QColor(badgeJson["color"].toString()));
+        badge->setBackground(QColor(badgeJson["background"].toString()));
+        badge->setBorder(QColor(badgeJson["border"].toString()));
+        badgesList->append(badge);
+    }
+    return badgesList;
 }
 
 ParserUtil::ParserUtil(QObject *parent) : QObject(parent)

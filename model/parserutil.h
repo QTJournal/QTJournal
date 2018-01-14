@@ -6,9 +6,11 @@
 #include "likes.h"
 #include "post.h"
 #include "user.h"
+#include "badge.h"
 
 #include <QJsonObject>
 #include <QObject>
+#include <QList>
 
 class ParserUtil : public QObject
 {
@@ -19,6 +21,7 @@ public:
     static Likes *parseLikes(QJsonObject likes);
     static ExternalLink *parseExternalLink(QJsonObject externalLink);
     static Post *parsePost(QJsonObject post);
+    static QList<Badge*> *parseBadges(QJsonArray badges);
 
 private:
     explicit ParserUtil(QObject *parent = 0);

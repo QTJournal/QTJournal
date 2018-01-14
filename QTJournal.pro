@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     model/user.cpp \
     model/cover.cpp \
     model/externallink.cpp \
-    model/likes.cpp
+    model/likes.cpp \
+    model/badge.cpp
 
 HEADERS  += mainwindow.h \
     HttpRequestWorker.h \
@@ -46,6 +47,7 @@ HEADERS  += mainwindow.h \
     model/user.h \
     model/cover.h \
     model/externallink.h \
-    model/likes.h
+    model/likes.h \
+    model/badge.h
 
 FORMS    += mainwindow.ui

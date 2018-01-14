@@ -322,6 +322,7 @@ void HttpRequestWorker::managerFinished(QNetworkReply *reply) {
     errorType = reply->error();
     if (errorType == QNetworkReply::NoError) {
         response = reply->readAll();
+        token = reply->rawHeader("X-Device-Token");//Четкие костыли
     }
     else {
         errorStr = reply->errorString();
