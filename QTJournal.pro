@@ -48,6 +48,7 @@ HEADERS  += mainwindow.h \
     model/cover.h \
     model/externallink.h \
     model/likes.h \
-    model/badge.h
+    model/badge.h \
+    view/postviewdelegate.h
 
 FORMS    += mainwindow.ui

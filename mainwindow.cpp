@@ -9,6 +9,7 @@
 
 #include <QStringListModel>
 #include <QDebug>
+#include "view/postviewdelegate.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("SUPER TJ Client");
+    PostViewDelegate *postView = new PostViewDelegate(this);
+    ui->postsList->setItemDelegate(postView);
 
     //api = new TJAPI();
     //connect(api, SIGNAL(responseIsHere(QString)), this, SLOT(updateText(QString)));
@@ -87,4 +90,13 @@ void MainWindow::on_pushButton_4_clicked()
         FileNames = dialog.selectedFiles();
     }
     emit QRtoDecode(FileNames);
+}
+
+void MainWindow::on_pushMe_clicked()
+{
+    QStringList stringList;
+    stringList << "test";
+    QStringListModel* listModel = new QStringListModel();
+    listModel->setStringList(stringList);
+    ui->postsList->setModel(listModel);
 }
