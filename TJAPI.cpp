@@ -120,36 +120,36 @@ void TJAPI::getClubPost(int entryId)
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     worker->setUseragent(this->myuseragent);
 
-    HttpRequestInput input = this->createRequest("club/item", "GET");
-    input.addVar("entryId", QString::number(entryId));
+    HttpRequestInput input = this->createRequest("entry/"+ QString::number(entryId), "GET");
+    //input.addVar("entryId",);
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(getClubPostFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
-void TJAPI::likeClubPost(int entryId, bool sign, QString hash)
+void TJAPI::likeClubPost(int entryId, bool sign)
 {
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     worker->setUseragent(this->myuseragent);
 
-    HttpRequestInput input = this->createRequest("club/like", "POST");
-    input.addVar("entryId", QString::number(entryId));
-    input.addVar("sign", sign?"1":"-1");
-    input.addVar("hash", hash);
+    HttpRequestInput input = this->createRequest("entry/"+QString::number(entryId)+"/likes", "POST");
+    //input.addVar("entryId", );
+    input.addVar("sign", sign?"+1":"-1");
+   // input.addVar("hash", hash);
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(likeClubPostFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
-void TJAPI::newClubPost(QString title, QString url, QString content, QList<QString> file_attaches, QList<QString> files)
+void TJAPI::newClubPost(QString title, QString session_id, QString text, QList<QString> file_attaches, QList<QString> files)
 {
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     worker->setUseragent(this->myuseragent);
 
-    HttpRequestInput input = this->createRequest("club/new", "POST");
+    HttpRequestInput input = this->createRequest("api/entry/create", "POST");
     input.addVar("title", title);
-    input.addVar("url", url);
-    input.addVar("content", content);
+    input.addVar("text", text);
+    input.addVar("session_id", session_id);
     if(file_attaches.size()+files.size()>2)
         //exception
     for(int i=0; i<file_attaches.size(); i++)
@@ -168,16 +168,16 @@ void TJAPI::newClubPost(QString title, QString url, QString content, QList<QStri
     worker->execute(&input);
 }
 
-void TJAPI::newComment(QString message, int paperId, QList<QString> file_attaches, QList<QString> files, int inReplyToCommentId)
+void TJAPI::newComment(QString message, int paperId, QList<QString> file_attaches, QList<QString> files, int inReplyToCommentId=0)
 {
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     worker->setUseragent(this->myuseragent);
 
-    HttpRequestInput input = this->createRequest("comments/new", "POST");
-    input.addVar("message", message);
-    input.addVar("paperId", QString::number(paperId));
-    if (inReplyToCommentId)
-        input.addVar("inReplyToCommentId", QString::number(inReplyToCommentId));
+    HttpRequestInput input = this->createRequest("entry/"+QString::number(paperId)+"/comments", "POST");
+    input.addVar("text", message);
+    //input.addVar("paperId", QString::number(paperId));
+    input.addVar("reply_to", QString::number(inReplyToCommentId));
+
     if(file_attaches.size()+files.size()>2)
         //exception
     for(int i=0; i<file_attaches.size(); i++)
@@ -201,23 +201,23 @@ void TJAPI::likeComment(int entryId, bool sign, QString hash)
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     worker->setUseragent(this->myuseragent);
 
-    HttpRequestInput input = this->createRequest("comments/like", "POST");
-    input.addVar("entryId", QString::number(entryId));
-    input.addVar("sign", sign?"1":"-1");
-    input.addVar("hash", hash);
+    HttpRequestInput input = this->createRequest("comment/"+QString::number(entryId)+"/likes", "POST");
+    //input.addVar("entryId", );
+    input.addVar("sign", sign?"+1":"-1");
+   // input.addVar("hash", hash);
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(likeCommentFinished(HttpRequestWorker*)));
     worker->execute(&input);
 }
 
-void TJAPI::getComments(QString section, int paperId)
+void TJAPI::getComments(int paperId, QString sorting)
 {
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     worker->setUseragent(this->myuseragent);
 
-    HttpRequestInput input = this->createRequest("comments", "GET");
-    input.addVar("section", section);
-    input.addVar("paperId", QString::number(paperId));
+    HttpRequestInput input = this->createRequest("entry/"+QString::number(paperId)+"/comments/"+sorting, "GET");
+    //input.addVar("section", section);
+    //input.addVar("paperId", QString::number(paperId));
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(getCommentsFinished(HttpRequestWorker*)));
     worker->execute(&input);
@@ -227,14 +227,12 @@ void TJAPI::getAccountPosts(int userId, int count, int offset)
 {
     HttpRequestWorker *worker = new HttpRequestWorker(this);
     worker->setUseragent(this->myuseragent);
-
-    HttpRequestInput input = this->createRequest("account/posts", "GET");
-    if(userId)
-        input.addVar("userId", QString::number(userId));
-    if (count!=30)
+    HttpRequestInput input = this->createRequest("user/"+userId?QString::number(userId):QString("me")+"/entries", "GET");
+    if (count)
         input.addVar("count", QString::number(count));
     if (offset)
         input.addVar("offset", QString::number(offset));
+
     connect(worker, SIGNAL(executionFinished(HttpRequestWorker*)), this,
             SIGNAL(getAccountPostsFinished(HttpRequestWorker*)));
     worker->execute(&input);

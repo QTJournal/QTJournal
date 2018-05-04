@@ -37,10 +37,10 @@ public:
     void addBlacklisted(QString tweopleId, QString hash);
     void removeBlacklisted(QString tweopleId, QString hash);
     void newClubPost(QString title, QString url, QString content, QList <QString> file_attaches= {}, QList <QString> files= {});
-    void likeClubPost(int entryId, bool sign, QString hash);
+    void likeClubPost(int entryId, bool sign);
     void newComment(QString message, int paperId, QList<QString> file_attaches, QList<QString> files, int inReplyToCommentId);
     void likeComment(int entryId, bool sign, QString hash);
-    void getComments(QString section, int paperId);
+    void getComments(int paperId, QString sorting="popular");
     void search(QString q, int count=30, int offset=0, int type=1);
     void setUseragent(QString);
     void activateTrial();
